@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <title>Title</title>
+    <link rel="stylesheet" th:href="@{/asserts/css/fileinput.css}" >
+    <link rel="stylesheet" th:href="@{/asserts/bootstrap/css/bootstrap.min.css}" >
+    <link rel="stylesheet" th:href="@{/asserts/css/font-awesome.css}" >
+    <link rel="stylesheet" th:href="@{/asserts/css/markstyle.css}" >
+    <link rel="stylesheet" th:href="@{/asserts/css/backmain.css}" >
+    <link rel="stylesheet" th:href="@{/asserts/css/demo.css}" >
+    <!-- GOOGLE FONTS -->
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700" rel="stylesheet">
+    <!-- ICONS -->
+    <link rel="stylesheet" th:href="@{/asserts/css/editormd.css}" >
+    <link rel="stylesheet" th:href="@{/asserts/layui/css/layui.css}" >
+</head>
+<body>
+<div id="wrapper">
+    <div th:replace="backhead::topbar"></div>
+    <div th:replace="backhead::sidebar"></div>
+    <!-- MAIN -->
+    <div class="main" style="padding-top: 80px;">
+        <!-- MAIN CONTENT -->
+        <div class="main-content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="container-fluid">
+                        <!-- INPUTS -->
+                        <div class="panel">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">游戏编辑</h3>
+                                <br>
+                                <hr>
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="fa fa-user"></i></span>
+                                    <input class="form-control" id="yxmc" th:value="${game.yxmc}" name="yxmc"  type="text">
+                                </div>
+                                <br>
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="fa fa-user"></i></span>
+                                    <input class="form-control" id="yxkfs" th:value="${game.yxkfs}" name="yxkfs"  type="text">
+                                </div>
+                                <br>
+                                <div id="editor">
+                                    <p th:utext="${game.grgs}"></p>
+                                </div>
+                            </div>
+                            <div class="form-group" style="margin:1em;margin-top: 0em;">
+                                <h3 class="panel-title">封面</h3>
+                                <hr>
+                                <img th:if="${game.picid != null}" th:src="'http://www.xuxiaonan.cn/uploadImages/' + ${game.picid}">
+                                <hr>
+                                <input type="hidden" id="id" name="id" th:value="${game.id}"/>
+                                <input type="hidden" id="upload" name="upload" value="0"/>
+                                <input type="hidden" id="picid" name="picid" th:value="${game.picid}"/>
+                                <input type="hidden" id="url" name="url"/>
+                                <form id="form" action="/mform/saveFile" method="post" enctype="multipart/form-data">
+                                    <input id="input-id" name="file" multiple type="file" data-show-caption="true"/>
+                                </form>
+                                <br>
+                                <span class="input-group-btn"><input value="提交" class="btn btn-primary" type="button" onclick="updateGame();"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" th:src="@{/asserts/js/jquery-3.3.1.min.js}"></script>
+<script type="text/javascript" th:src="@{/asserts/bootstrap/js/bootstrap.min.js}" ></script>
+<script type="text/javascript" th:src="@{/asserts/layui/layui.js}" ></script>
+<script type="text/javascript" th:src="@{/asserts/js/jquery.slimscroll.min.js}"></script>
+<script type="text/javascript" th:src="@{/asserts/js/jquery.easypiechart.min.js}"></script>
+<script type="text/javascript" th:src="@{/asserts/js/klorofil-common.js}"></script>
+<script type="text/javascript" th:src="@{/asserts/js/fileinput.js}" ></script>
+<script type="text/javascript" th:src="@{/asserts/js/zh.js}" ></script>
+<script type="text/javascript" th:src="@{/asserts/js/wangEditor.min.js}" ></script>
+<script type="text/javascript">
+    var E = window.wangEditor;
+    var editor = new E('#editor');
+    editor.customConfig.uploadImgServer = '/mform/uploadImage'
+    editor.customConfig.uploadImgMaxLength = 1
+    editor.customConfig.uploadImgHooks = {
+        // 如果服务器端返回的不是 {errno:0, data: [...]} 这种格式，可使用该配置
+        // （但是，服务器端返回的必须是一个 JSON 格式字符串！！！否则会报错）
+        customInsert: function (insertImg, result, editor) {
+            // 图片上传并返回结果，自定义插入图片的事件（而不是编辑器自动插入图片！！！）
+            // insertImg 是插入图片的函数，editor 是编辑器对象，result 是服务器端返回的结果
+
+            // 举例：假如上传图片成功后，服务器端返回的是 {url:'....'} 这种格式，即可这样插入图片：
+            var url = result.url
+            insertImg(url)
+
+            // result 必须是一个 JSON 格式字符串！！！否则报错
+        }
+    }
+    editor.create();
+</script>
+<script>
+    $(function () {
+        initFileInput("input-id");
+    })
+
+    function initFileInput(ctrlName) {
+        var control = $('#' + ctrlName);
+        control.fileinput({
+            language: 'zh', //设置语言
+            uploadUrl: "/mform/savePic", //上传的地址
+            allowedFileExtensions: ['jpg', 'gif', 'png','md','xls','xlxs','cpp','txt','mp3'
+                ,'doc','ppt','pdf','zip','htm','mov','docx','pptx','rar','tar','gzip','7z','html',
+                'avi','mp4','wmv','wav','java','js','css','jar','ini','php','deb'],//接收的文件后缀
+            //uploadExtraData:{"id": 1, "fileName":'123.mp3'},
+            uploadAsync: true, //默认异步上传
+            showUpload: true, //是否显示上传按钮
+            showRemove : true, //显示移除按钮
+            showPreview : true, //是否显示预览
+            showCaption: false,//是否显示标题
+            browseClass: "btn btn-primary", //按钮样式
+            //dropZoneEnabled: true,//是否显示拖拽区域
+            //minImageWidth: 50, //图片的最小宽度
+            //minImageHeight: 50,//图片的最小高度
+            //maxImageWidth: 1000,//图片的最大宽度
+            //maxImageHeight: 1000,//图片的最大高度
+            //maxFileSize: 0,//单位为kb，如果为0表示不限制文件大小
+            //minFileCount: 0,
+            //maxFileCount: 10, //表示允许同时上传的最大文件个数
+            enctype: 'multipart/form-data',
+            validateInitialCount:true,
+            previewFileIcon: "<i class='glyphicon glyphicon-king'></i>",
+            msgFilesTooMany: "选择上传的文件数量({n}) 超过允许的最大数值{m}！",
+            fileActionSettings : {
+                showUpload: false,
+                //showRemove: false
+                showZoom:false
+            }
+        }).on('filepreupload', function(event, data, previewId, index) {     //上传中
+            var form = data.form, files = data.files, extra = data.extra,
+                response = data.response, reader = data.reader;
+            console.log('文件正在上传');
+        }).on("fileuploaded", function (event, data, previewId, index) {    //一个文件上传成功
+            $("#picid").val(data.response.url);
+            $("#upload").val(1);
+            console.log('文件上传成功！'+data.id);
+
+        }).on('fileerror', function(event, data, msg) {  //一个文件上传失败
+            console.log('文件上传失败！'+data.id);
+
+
+        })
+    }
+</script>
+<script>
+    function updateGame() {
+        var picid = $("#picid").val();
+        var context = editor.txt.html();
+        var yxmc = $("#yxmc").val();
+        var yxkfs = $("#yxkfs").val();
+        var id = $("#id").val();
+        var update = $("#upload").val();
+        if(context != "<p><br></p>"&&yxmc != ""){
+            $.ajax({
+                type:'post',
+                url:"/mform/updateGame",
+                sync:false,
+                data:{picid:picid,context:context,title:yxmc,id:id,update:update,yxkfs:yxkfs},
+                success:function(data){
+                    alert("更新成功！");
+                    location.reload();
+                }
+
+            });
+        }else {
+            alert("标题和内容不为空！");
+        }
+    }
+</script>
+</body>
+</html>

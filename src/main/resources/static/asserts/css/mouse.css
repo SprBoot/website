@@ -1,0 +1,12 @@
+* {
+    cursor: url("http://om8u46rmb.bkt.clouddn.com/sword2.ico"), auto !important;
+    box-shadow: 0 0 black;
+}
+:active {
+    cursor: url("http://om8u46rmb.bkt.clouddn.com/sword1.ico"), auto !important;
+}
+*, *:before, *:after {
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}

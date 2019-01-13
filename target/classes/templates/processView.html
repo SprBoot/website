@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>流程查看</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <!-- VENDOR CSS -->
+    <link rel="stylesheet" th:href="@{/asserts/bootstrap/css/bootstrap.min.css}" >
+    <link rel="stylesheet" th:href="@{/asserts/css/bootstrap-table.css}" >
+    <link rel="stylesheet" th:href="@{/asserts/css/fileinput.css}" >
+    <link rel="stylesheet" th:href="@{/asserts/css/font-awesome.min.css}" >
+    <link rel="stylesheet" th:href="@{/asserts/layui/css/layui.css}" >
+    <link rel="stylesheet" th:href="@{/asserts/css/backstyle.css}" >
+    <link rel="stylesheet" th:href="@{/asserts/css/custom.css}" >
+    <link rel="stylesheet" th:href="@{/asserts/css/backmain.css}" >
+    <link rel="stylesheet" th:href="@{/asserts/css/demo.css}" >
+    <!-- GOOGLE FONTS -->
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700" rel="stylesheet">
+    <style>
+        img { height: auto; width: auto\9; width:100%; }
+    </style>
+</head>
+
+<body>
+<!-- WRAPPER -->
+<div id="wrapper">
+    <!-- NAVBAR -->
+    <div th:replace="backhead::topbar (activeUri='processView.html')"></div>
+    <div th:replace="backhead::sidebar (activeUri='processView.html')"></div>
+    <!-- MAIN -->
+    <div class="main" style="padding-top: 80px;">
+        <div class="main-content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="container-fluid">
+                        <!-- RECENT PURCHASES -->
+                        <div class="panel">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">当前流程</h3>
+                            </div>
+                            <div class="panel-body">
+                                <div id="toolbar" class="btn-group">
+                                    <button id="btn_add" type="button" class="btn btn-default" onclick="getDeploymentImg();" data-toggle="modal" data-target="#myModal">
+                                        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>查看流程图
+                                    </button>
+                                </div>
+                                <table id="tb_departments"></table>
+                            </div>
+                        </div>
+                        <!-- END RECENT PURCHASES -->
+                        <div class="panel">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">流程部署</h3>
+                                <div class="right">
+                                    <button type="button" class="btn-toggle-collapse"><i class="lnr lnr-chevron-up"></i></button>
+                                    <button type="button" class="btn-remove"><i class="lnr lnr-cross"></i></button>
+                                </div>
+                            </div>
+                            <div class="form-group" style="margin:1em;margin-top: 0em;">
+                                <form id="form" action="/process/deployProcess" method="post" enctype="multipart/form-data">
+                                    <div class="input-group" style="margin-bottom: 3em;">
+                                        <span class="input-group-addon"><i class="fa fa-user"></i></span>
+                                        <input class="form-control" id="name" name="processname" placeholder="流程名称" type="text" required="required">
+                                    </div>
+                                    <h3 class="panel-title" style="margin-bottom: 1em;">请上传zip文件</h3>
+                                    <input id="input-id" name="file" multiple type="file" data-show-caption="true"/>
+                                    <input type="hidden" value="" id="zipname" name="zipname"/>
+                                    <div class="panel-footer" style="margin-top: 3em;">
+                                        <div class="row">
+                                            <div class="col-md-6"><span class="panel-note"></span></div>
+                                            <div class="col-md-6 text-right"><input class="btn btn-primary" type="submit"></div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- END MAIN -->
+        <div class="clearfix"></div>
+    </div>
+    <!-- Modal -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="myModalLabel">流程图</h4>
+                </div>
+                <div class="modal-body" id="showImage">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" onclick="removeImage();" data-dismiss="modal">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- END WRAPPER -->
+<!-- Javascript -->
+<script type="text/javascript" th:src="@{/asserts/js/jquery-3.3.1.min.js}"></script>
+<script type="text/javascript" th:src="@{/asserts/bootstrap/js/bootstrap.min.js}" ></script>
+<script type="text/javascript" th:src="@{/asserts/js/bootstrap-table.js}"></script>
+<script type="text/javascript" th:src="@{/asserts/js/bootstrap-table-zh-CN.js}"></script>
+<script type="text/javascript" th:src="@{/asserts/layui/layui.js}" ></script>
+<script type="text/javascript" th:src="@{/asserts/js/jquery.slimscroll.min.js}"></script>
+<script type="text/javascript" th:src="@{/asserts/js/jquery.easypiechart.min.js}"></script>
+<script type="text/javascript" th:src="@{/asserts/js/klorofil-common.js}"></script>
+<script type="text/javascript" th:src="@{/asserts/js/fileinput.js}" ></script>
+<script type="text/javascript" th:src="@{/asserts/js/zh.js}" ></script>
+<script>
+    $(function () {
+
+        //1.初始化Table
+        var oTable = new TableInit();
+        oTable.Init();
+
+        //2.初始化Button的点击事件
+        var oButtonInit = new ButtonInit();
+        oButtonInit.Init();
+
+    });
+
+
+    var TableInit = function () {
+        var oTableInit = new Object();
+        //初始化Table
+        oTableInit.Init = function () {
+            $('#tb_departments').bootstrapTable({
+                url: '/process/getDeploymentTable',         //请求后台的URL（*）
+                method: 'get',                      //请求方式（*）
+                toolbar: '#toolbar',                //工具按钮用哪个容器
+                striped: true,                      //是否显示行间隔色
+                cache: false,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+                pagination: true,                   //是否显示分页（*）
+                sortable: false,                     //是否启用排序
+                sortOrder: "asc",                   //排序方式
+                queryParams: oTableInit.queryParams,//传递参数（*）
+                sidePagination: "client",           //分页方式：client客户端分页，server服务端分页（*）
+                pageNumber:1,                       //初始化加载第一页，默认第一页
+                pageSize: 6,                       //每页的记录行数（*）
+                pageList: [6,10,25,50,100],        //可供选择的每页的行数（*）
+                search: true,                       //是否显示表格搜索，此搜索是客户端搜索，不会进服务端，所以，个人感觉意义不大
+                strictSearch: false,                //设置true为全匹配搜索，否则为模糊搜索
+                showColumns: true,                  //是否显示所有的列
+                showRefresh: true,                  //是否显示刷新按钮
+                showToggle: true,                    //是否显示切换视图（table/card）按钮
+                showPaginationSwitch: true,          //是否显示切换分页按钮
+                minimumCountColumns: 2,             //最少允许的列数
+                clickToSelect: true,                //是否启用点击选中行
+                height: 360,                        //行高，如果没有设置height属性，表格自动根据记录条数觉得表格高度
+                uniqueId: "id",                     //每一行的唯一标识，一般为主键列
+                showToggle:true,                    //是否显示详细视图和列表视图的切换按钮
+                cardView: false,                    //是否显示详细视图
+                detailView: false,                   //是否显示父子表
+                icons: {                             //自定义图标
+                    paginationSwitchDown: 'glyphicon-collapse-down icon-chevron-down',
+                    paginationSwitchUp: 'glyphicon-collapse-up icon-chevron-up',
+                    refresh: 'glyphicon-refresh icon-refresh',
+                    toggle: 'glyphicon-list-alt icon-list-alt',
+                    columns: 'glyphicon-th icon-th',
+                    detailOpen: 'glyphicon-plus icon-plus',
+                    detailClose: 'glyphicon-minus icon-minus'
+                },
+                iconsPrefix: 'glyphicon',           //定义字体库
+                columns: [{
+                    checkbox: true
+                }
+                    , {
+                        field: 'id',
+                        title: '部署ID'
+                    }, {
+                        field: 'name',
+                        title: '部署名称'
+                    }, {
+                        field: 'deploymentTime',
+                        title: '部署时间'
+                    }]
+            });
+        };
+        //得到查询的参数
+        oTableInit.queryParams = function (params) {
+            var temp = {   //这里的键的名字和控制器的变量名必须一直，这边改动，控制器也需要改成一样的
+                limit: params.limit,   //页面大小
+                offset: params.offset,  //页码
+            };
+            return temp;
+        };
+        return oTableInit;
+    };
+    var ButtonInit = function () {
+        var oInit = new Object();
+        var postdata = {};
+
+        oInit.Init = function () {
+            //初始化页面上面的按钮事件
+        };
+        return oInit;
+    };
+</script>
+<script>
+    $(function () {
+        initFileInput("input-id");
+    })
+
+    function initFileInput(ctrlName) {
+        var control = $('#' + ctrlName);
+        control.fileinput({
+            language: 'zh', //设置语言
+            uploadUrl: "/process/saveZip", //上传的地址
+            allowedFileExtensions: ['zip'],//接收的文件后缀
+            //uploadExtraData:{"id": 1, "fileName":'123.mp3'},
+            uploadAsync: true, //默认异步上传
+            showUpload: true, //是否显示上传按钮
+            showRemove : true, //显示移除按钮
+            showPreview : true, //是否显示预览
+            showCaption: false,//是否显示标题
+            browseClass: "btn btn-primary", //按钮样式
+            //dropZoneEnabled: true,//是否显示拖拽区域
+            //minImageWidth: 50, //图片的最小宽度
+            //minImageHeight: 50,//图片的最小高度
+            //maxImageWidth: 1000,//图片的最大宽度
+            //maxImageHeight: 1000,//图片的最大高度
+            //maxFileSize: 0,//单位为kb，如果为0表示不限制文件大小
+            //minFileCount: 0,
+            maxFileCount: 1, //表示允许同时上传的最大文件个数
+            enctype: 'multipart/form-data',
+            validateInitialCount:true,
+            previewFileIcon: "<i class='glyphicon glyphicon-king'></i>",
+            msgFilesTooMany: "选择上传的文件数量({n}) 超过允许的最大数值{m}！",
+            fileActionSettings : {
+                showUpload: false,
+                //showRemove: false
+                showZoom:false
+            }
+        }).on('filepreupload', function(event, data, previewId, index) {     //上传中
+            var form = data.form, files = data.files, extra = data.extra,
+                response = data.response, reader = data.reader;
+            console.log('文件正在上传');
+        }).on("fileuploaded", function (event, data, previewId, index) {    //一个文件上传成功
+            $("#zipname").val(data.response.fileName);
+            console.log('文件上传成功！'+data.id);
+
+        }).on('fileerror', function(event, data, msg) {  //一个文件上传失败
+            console.log('文件上传失败！'+data.id);
+
+
+        })
+    }
+</script>
+<script>
+    function getDeploymentImg(){
+        var bootstrapTable = $("#tb_departments").bootstrapTable('getSelections');
+        if(bootstrapTable.length < 1 || bootstrapTable.length >1){
+            alert("请选中一条数据！");
+            $("#showImage").append('<h3 id="currentimage" class="panel-title">未选择部署ID</h3>');
+        }else{
+            var deploymentId = bootstrapTable[0].id;
+            $("#showImage").append('<img id="currentimage" class="img-rounded" src="/process/getProcessImg?deploymentId='+deploymentId+'">');
+        }
+
+    }
+    function removeImage(){
+        $("#currentimage").remove();
+    }
+</script>
+</body>
+
+</html>

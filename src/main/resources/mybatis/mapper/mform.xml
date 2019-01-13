@@ -1,0 +1,378 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.dingdm.website.mapper.MformMapper">
+    <!-- 获取个人信息 -->
+    <select id="getUserById" resultType="cn.dingdm.website.entities.User">
+        SELECT * FROM user_tb WHERE id = 1;
+    </select>
+    <!-- 更新个人信息 -->
+    <update id="updateInfo" parameterType ="cn.dingdm.website.entities.User">
+		update user_tb set
+		name = #{name},
+		gzly = #{gzly},
+		grjs = #{grjs},
+		date = #{date},
+		del_flag = 0
+		where id = 1 AND del_flag = 0;
+	</update>
+	<select id="getNoteType" resultType="cn.dingdm.website.entities.NoteType">
+		CALL getAllNoteType();
+	</select>
+	<select id="getNoteTypeIdByLxmc" resultType="String">
+		SELECT id FROM notetype_tb WHERE del_flag = 0 AND lxmc = #{lxmc};
+	</select>
+	<select id="insertNote" resultType="INTEGER">
+	CALL insertNote(#{lxid},#{bjmc},#{bjzz},#{bjnr},#{description},#{date},#{del_flag});
+	</select>
+	<insert id="insertKnowLedge" parameterType="cn.dingdm.website.entities.KnowLedge">
+	insert into zssp_tb values(
+ 	null,
+ 	#{zsid},
+ 	#{zsmc},
+ 	#{percent},
+ 	#{date},
+ 	#{del_flag}
+ 	);
+	</insert>
+	<select id="getNoteTypeCount" resultType ="Integer">
+		select count(*) from bj_tb
+		where del_flag = 0 and lxid LIKE "%"#{lxid}"%"
+	</select>
+	<insert id="insertNoteType" parameterType="cn.dingdm.website.entities.NoteType">
+	insert into notetype_tb values(
+ 	#{id},
+ 	#{lxmc},
+ 	#{description},
+ 	#{number},
+ 	#{date},
+ 	#{del_flag}
+ 	);
+	</insert>
+	<select id = "getNoteCount" resultType ="Integer">
+		CALL getNoteCount();
+	</select>
+	<select id="getNoteByCount" resultType="cn.dingdm.website.entities.Note" >
+		CALL getAllNoteIfHasNote(#{start},#{end});
+	</select>
+	<select id="getNoteById" resultType="cn.dingdm.website.entities.Note">
+		select * from bj_tb
+		where del_flag = 0 AND id = #{id}
+	</select>
+	<update id="deleteNote" parameterType="cn.dingdm.website.entities.Note">
+		update bj_tb set
+		del_flag = 1
+		where id = #{id} AND del_flag = 0;
+	</update>
+	<select id="getNoteTypeById" resultType="cn.dingdm.website.entities.NoteType" >
+		SELECT * FROM notetype_tb WHERE id = #{id} AND del_flag = 0;
+	</select>
+	<update id ="updateNote" parameterType="cn.dingdm.website.entities.Note" >
+		update bj_tb set
+		lxid = #{lxid},
+		bjmc = #{bjmc},
+		bjzz = #{bjzz},
+		bjnr = #{bjnr},
+		description = #{description},
+		date = #{date},
+		del_flag = 0
+		where id =#{id} AND del_flag = 0;
+	</update>
+	<select id ="getKnowLedge" resultType ="cn.dingdm.website.entities.KnowLedge">
+		select * from
+		zssp_tb where del_flag = 0;
+	</select>
+	<insert id="insertMsgRabbitMq" parameterType="cn.dingdm.website.entities.MsgRabbitMq">
+	insert into msg_rabbitmq values(
+ 	#{uuid},
+ 	#{context},
+ 	#{date},
+ 	#{have_read},
+ 	#{del_flag}
+ 	);
+	</insert>
+	<select id = "getVuserCount" resultType ="Integer">
+		select count(*) from vuser_tb
+		where del_flag = 0;
+	</select>
+	<select id="getAllRole" resultType="cn.dingdm.website.entities.Role">
+		SELECT * FROM role_tb WHERE del_flag = 0;
+	</select>
+	<select id="getAllVuserByRoleId" resultType="cn.dingdm.website.entities.Vuser">
+		SELECT * FROM vuser_tb
+		JOIN(
+		roleuser_tb JOIN role_tb
+		ON roleuser_tb.roleid = role_tb.id
+		)
+		ON vuser_tb.id = roleuser_tb.userid
+		WHERE role_tb.id = #{id} AND vuser_tb.del_flag = 0 AND vuser_tb.emailconfirm = 0;
+	</select>
+	<select id="getAllOtherVuserWithoutRole" resultType="cn.dingdm.website.entities.Vuser">
+		SELECT * FROM vuser_tb
+		WHERE id NOT IN(
+        SELECT userid FROM roleuser_tb
+        )
+        AND vuser_tb.del_flag = 0 AND vuser_tb.emailconfirm = 0;
+	</select>
+	<delete id="deleteRoleByUserid" parameterType="Integer">
+		DELETE A FROM roleuser_tb A
+		JOIN vuser_tb B
+		ON A.userid = B.id
+		JOIN role_tb C
+		ON A.roleid = C.id
+		WHERE B.id = #{userid} AND C.id = #{roleid}
+	</delete>
+	<select id ="deleteUser" parameterType="Integer">
+		UPDATE vuser_tb SET
+		vuser_tb.del_flag = 1
+		WHERE vuser_tb.id = #{id};
+	</select>
+	<select id="deleteRoleByUserId" parameterType="Integer">
+		CALL deleteRoleByUserid(#{id});
+	</select>
+	<insert id="insertRoleByUserId" parameterType="cn.dingdm.website.entities.RoleUser">
+	insert into roleuser_tb values(
+ 	null,
+ 	#{roleid},
+ 	#{userid}
+ 	);
+	</insert>
+	<select id="getAllPermission" resultType="cn.dingdm.website.entities.Permission">
+		SELECT * FROM permission_tb WHERE del_flag = 0;
+	</select>
+	<select id="deleteRoleUserByRoleId" parameterType="Integer">
+		CALL deleteRoleUserByRoleId(#{id});
+	</select>
+	<insert id="insertRole" parameterType="cn.dingdm.website.entities.Role">
+	insert into role_tb values(
+ 	null,
+ 	#{role},
+ 	#{describe},
+ 	#{del_flag},
+ 	#{date}
+ 	);
+	</insert>
+	<select id="deleteRolePermissionByPermissionId" parameterType="Integer">
+		CALL deleteRolePermissionByPermissionId(#{id});
+	</select>
+	<insert id="insertPermission" parameterType="cn.dingdm.website.entities.Permission">
+	insert into permission_tb values(
+ 	null,
+ 	#{permission},
+ 	#{describe},
+ 	#{del_flag},
+ 	#{date}
+ 	);
+	</insert>
+	<select id="getAllPermissionByRoleId" resultType="cn.dingdm.website.entities.Permission">
+		SELECT * FROM permission_tb
+		JOIN(
+		roleperm_tb JOIN role_tb
+		ON roleperm_tb.roleid = role_tb.id
+		)
+		ON permission_tb.id = roleperm_tb.perid
+		WHERE role_tb.id = #{id};
+	</select>
+	<select id="deletePermissionByPermissionid" parameterType="Integer">
+		CALL deletePermissionByPermissionid(#{permissionid},#{roleid});
+	</select>
+	<insert id="insertRoleByPermissionId" parameterType="cn.dingdm.website.entities.RolePermission">
+	insert into roleperm_tb values(
+ 	null,
+ 	#{roleid},
+ 	#{perid}
+ 	);
+	</insert>
+	<select id = "getProcCountByUserid" resultType ="Integer" parameterType="Integer">
+		select count(*) from back_appl_tb
+		where userid = #{userid} AND del_flag = 0;
+	</select>
+	<select id="getProcByUserId" resultType="cn.dingdm.website.entities.BackAppl">
+		select * from back_appl_tb
+		where del_flag = 0 and userid = #{userid};
+	</select>
+	<insert id="insertBackAppl" parameterType="cn.dingdm.website.entities.BackAppl">
+	insert into back_appl_tb values(
+ 	null,
+ 	#{title},
+ 	#{describe},
+ 	#{state},
+ 	#{userid},
+ 	#{deploymentid},
+ 	#{createtime},
+ 	#{del_flag},
+ 	#{date}
+ 	);
+	</insert>
+	<update id ="updateBackAppl" parameterType="cn.dingdm.website.entities.BackAppl" >
+		update back_appl_tb set
+		date = #{date},
+		del_flag = 1
+		where id =#{id};
+	</update>
+	<select id="getAdminByAdminId" parameterType="Integer" resultType="cn.dingdm.website.entities.Vuser">
+		SELECT * FROM vuser_tb
+		JOIN(
+		roleuser_tb JOIN role_tb
+		ON roleuser_tb.roleid = role_tb.id
+		)
+		ON vuser_tb.id = roleuser_tb.userid
+		WHERE role_tb.id = #{id};
+	</select>
+	<select id="getBackAppl" resultType="cn.dingdm.website.entities.BackAppl" parameterType="Integer">
+		SELECT * FROM back_appl_tb WHERE id = #{id} AND del_flag = 0;
+	</select>
+	<update id ="updateBackApplState" parameterType="cn.dingdm.website.entities.BackAppl" >
+		update back_appl_tb set
+		state = #{state}
+		where id =#{id};
+	</update>
+	<update id ="updateBackApplStateToSuccess" parameterType="cn.dingdm.website.entities.BackAppl" >
+		update back_appl_tb set
+		state = #{state},
+		zhushi = #{zhushi}
+		where id =#{id};
+	</update>
+	<update id ="updateBackApplStateToFail" parameterType="cn.dingdm.website.entities.BackAppl" >
+		update back_appl_tb set
+		state = #{state},
+		zhushi = #{zhushi}
+		where id =#{id};
+	</update>
+	<select id="deleteAllProcess" parameterType="String">
+		CALL deleteAllProcess(#{processInstanceId});
+	</select>
+	<select id="getAllNote" resultType="cn.dingdm.website.entities.Note">
+		SELECT * FROM bj_tb WHERE del_flag = 0;
+	</select>
+	<select id="getAllUser" resultType="cn.dingdm.website.entities.Vuser">
+		SELECT * FROM vuser_tb
+		WHERE del_flag = 0 AND emailconfirm = 0;
+	</select>
+	<select id="getUserRoleByUserId" resultType="cn.dingdm.website.entities.Role" parameterType="Integer">
+		SELECT * FROM role_tb
+		JOIN (roleuser_tb
+		JOIN vuser_tb
+		ON roleuser_tb.userid = vuser_tb.id
+		)
+		ON role_tb.id = roleuser_tb.roleid
+		WHERE vuser_tb.id = #{userid} AND vuser_tb.del_flag = 0 AND vuser_tb.emailconfirm = 0;
+	</select>
+	<select id="getRoleById" resultType="cn.dingdm.website.entities.Role" parameterType="Integer">
+		SELECT * FROM role_tb WHERE id = #{id}
+	</select>
+	<select id="getAllPermissionRoleByRoleId" resultType="cn.dingdm.website.entities.PermissionRole">
+		SELECT * FROM permission_tb
+		JOIN(
+		roleperm_tb JOIN role_tb
+		ON roleperm_tb.roleid = role_tb.id
+		)
+		ON permission_tb.id = roleperm_tb.perid
+		WHERE role_tb.id = #{id};
+	</select>
+	<update id ="updateBackZhushi" parameterType="cn.dingdm.website.entities.BackAppl" >
+		update back_appl_tb set
+		zhushi = #{zhushi}
+		where id =#{id};
+	</update>
+	<insert id="insertPicture" parameterType="cn.dingdm.website.entities.Picture">
+	insert into pic_tb values(
+ 	null,
+ 	#{pid},
+ 	#{pname},
+ 	#{address},
+ 	#{type},
+ 	#{date},
+ 	#{del_flag}
+ 	);
+	</insert>
+	<insert id="insertLife" parameterType="cn.dingdm.website.entities.Life">
+	insert into sh_tb values(
+ 	null,
+ 	#{mc},
+ 	#{auth},
+ 	#{js},
+ 	#{picid},
+ 	#{date},
+ 	#{del_flag}
+ 	);
+	</insert>
+	<select id="getAllLife" resultType="cn.dingdm.website.entities.Life">
+		SELECT * FROM sh_tb WHERE del_flag = 0;
+	</select>
+	<select id="getLifeById" resultType="cn.dingdm.website.entities.Life">
+		SELECT * FROM sh_tb WHERE id = #{id} AND del_flag = 0;
+	</select>
+	<update id ="updateLife" parameterType="cn.dingdm.website.entities.Life" >
+		update sh_tb set
+		mc = #{mc},
+		auth = #{auth},
+		js = #{js},
+		picid = #{picid},
+		date = #{date}
+		where id =#{id};
+	</update>
+	<update id ="updatePicture" parameterType="cn.dingdm.website.entities.Picture" >
+		update pic_tb set
+		pname = #{pname},
+		type = #{type},
+		date = #{date}
+		where pid =#{pid};
+	</update>
+	<update id ="deleteLife" parameterType="cn.dingdm.website.entities.Life" >
+		update sh_tb set
+		del_flag = #{del_flag}
+		where id =#{id};
+	</update>
+	<insert id="insertGame" parameterType="cn.dingdm.website.entities.Game">
+	insert into yx_tb values(
+ 	null,
+ 	#{yxmc},
+ 	#{yxkfs},
+ 	#{grgs},
+ 	#{picid},
+ 	#{date},
+ 	#{del_flag}
+ 	);
+	</insert>
+	<select id="getAllGame" resultType="cn.dingdm.website.entities.Game">
+		SELECT * FROM yx_tb WHERE del_flag = 0;
+	</select>
+	<select id="getGameById" resultType="cn.dingdm.website.entities.Game">
+		SELECT * FROM yx_tb WHERE id = #{id} AND del_flag = 0;
+	</select>
+	<update id ="deleteGame" parameterType="cn.dingdm.website.entities.Game" >
+		update yx_tb set
+		del_flag = #{del_flag}
+		where id =#{id};
+	</update>
+	<update id ="updateGame" parameterType="cn.dingdm.website.entities.Game" >
+		update yx_tb set
+		yxmc = #{yxmc},
+		yxkfs = #{yxkfs},
+		grgs = #{grgs},
+		picid = #{picid},
+		date = #{date}
+		where id =#{id};
+	</update>
+	<insert id="insertFileNote" parameterType="cn.dingdm.website.entities.FileNote">
+	insert into file_note_tb values(
+	null,
+	#{noteid},
+	#{name},
+	#{type},
+	#{description},
+	#{date},
+	#{del_flag}
+	);
+	</insert>
+	<select id="getAllNoteSourceByNoteId" resultType="cn.dingdm.website.entities.FileNote">
+		SELECT * FROM file_note_tb WHERE noteid = #{noteid} AND del_flag = 0;
+	</select>
+	<update id ="deleteSourceById" parameterType="cn.dingdm.website.entities.FileNote" >
+		update file_note_tb set
+		del_flag = 1
+		where id =#{id} AND del_flag = 0;
+	</update>
+</mapper>

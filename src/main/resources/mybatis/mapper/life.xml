@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.dingdm.website.mapper.LifeMapper">
+	<select id = "getLifeCount" resultType ="Integer">
+		select count(*) from sh_tb
+		where del_flag = 0;
+	</select>
+	<select id="getLifeByCount" resultType="cn.dingdm.website.entities.Life" >
+		select * from sh_tb where del_flag = 0  LIMIT #{start},#{end};
+	</select>
+	<select id = "getGameCount" resultType ="Integer">
+		select count(*) from yx_tb
+		where del_flag = 0;
+	</select>
+	<select id="getGameByCount" resultType="cn.dingdm.website.entities.Game" >
+		select * from yx_tb where del_flag = 0  LIMIT #{start},#{end};
+	</select>
+	<select id="getLifeById" resultType="cn.dingdm.website.entities.Life">
+		select * from sh_tb where id = #{id} and del_flag = 0;
+	</select>
+	<select id="getOtherLife" resultType="cn.dingdm.website.entities.Life">
+		select * from sh_tb where del_flag = 0 LIMIT #{count};
+	</select>
+	<select id="getGameById" resultType="cn.dingdm.website.entities.Game">
+		select * from yx_tb where id = #{id} and del_flag = 0;
+	</select>
+	<select id="getOtherGame" resultType="cn.dingdm.website.entities.Game">
+		select * from yx_tb where del_flag = 0 LIMIT #{count};
+	</select>
+</mapper>

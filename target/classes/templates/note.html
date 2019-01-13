@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>个人笔记</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1" name="viewport"/>
+    <meta content="" name="description"/>
+    <meta content="" name="author"/>
+    <link rel="stylesheet" th:href="@{/asserts/bootstrap/css/bootstrap.css}" >
+    <link rel="stylesheet" th:href="@{/asserts/css/style.css}" >
+    <link rel="stylesheet" th:href="@{/asserts/css/font-awesome.css}" >
+    <link rel="stylesheet" th:href="@{/asserts/layui/css/layui.css}" >
+    <link rel="stylesheet" th:href="@{/asserts/css/mouse.css}" >
+    <link rel="stylesheet" th:href="@{/asserts/live2d/css/live2d.css}" >
+</head>
+<body>
+<div th:replace="head::topbar (activeUri='note.html')"></div>
+<div id="header">
+    <div class="overlay">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8 header-text-top " id="about">
+
+                    <h2><strong style="font-size: 30px;margin-top: 20px;margin-bottom: 10px;font-weight: bold;line-height: 1.1;">个人笔记记录</strong></h2>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 " id ="noteview">
+        </div>
+        <div class="col-md-4">
+
+            <div class="input-group" style="padding-top: 30px;">
+                <input type="text" class="form-control" id="searchInfo" placeholder="Search for...">
+                <span class="input-group-btn">
+                    <button class="btn btn-default" type="button" onclick="getSearchInfo();">搜索</button>
+                </span>
+            </div><!-- /input-group -->
+
+
+            <ul class="list-group" style="padding-top: 30px;">
+                <li class="list-group-item" th:each="notes:${NoteType}">
+                    <a onclick="getTypeInfomation(this)"><input type="hidden" th:value="${notes.id}" id="noteid"/><span class="label label-danger" style="font-size: 16px;">[[${notes.lxmc}]]</span></a><span class="badge">[[${notes.number}]]</span>
+                </li>
+                <li class="list-group-item">
+                    <a onclick="getnoteIformation()"><span class="label label-danger" style="font-size: 16px;">笔记</span></a><span class="badge">[[${count}]]</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div id="fenYe"></div>
+</div>
+<div th:replace="live2D::live"></div>
+<script type="text/javascript" th:src="@{/asserts/js/jquery-3.3.1.min.js}"></script>
+<script type="text/javascript" th:src="@{/asserts/bootstrap/js/bootstrap.min.js}" ></script>
+<script type="text/javascript" th:src="@{/asserts/layui/layui.js}" ></script>
+<script th:src="@{/asserts/js/love.js}"></script>
+<script>
+    var message_Path = 'asserts/live2d/';//资源目录，如果目录不对请更改
+    var talkAPI = "";//如果有类似图灵机器人的聊天接口请填写接口路径
+</script>
+<script type="text/javascript" th:src="@{/asserts/live2d/js/live2d.js}"></script>
+<script type="text/javascript" th:src="@{/asserts/live2d/js/message.js}"></script>
+<script type="text/javascript">
+
+    //分页相关参数
+    var start = 0;//起始页
+    var limit = 5;//每页显示条数
+    var nowPage = 1;//当前页
+    var Numbers = 0;//数据量
+
+    function getnoteIformation(){
+//AJAX向后台请求数据
+        $.ajax({
+            type:'post',
+            url:"/getnoteIformation",
+            sync:false,
+            data:{start:start,limit:limit,nowPage:nowPage,Number:Numbers},
+            success:function(data){
+                setHtml(data.root)
+                start = data.currentResult;
+                Numbers = data.total;
+                //进行分页初始化
+                pageReady();
+            }
+
+        });
+    }
+
+    /*得到不同类型的笔记*/
+    function getTypeInfomation(type){
+        //取得当前点击类型的id
+        var typeid = $(type).children().val();
+//AJAX向后台请求数据
+        $.ajax({
+            type:'post',
+            url:"/getTypeInfomation",
+            sync:false,
+            data:{start:start,limit:limit,nowPage:nowPage,Number:Numbers,id:typeid},
+            success:function(data){
+                setHtml(data.root)
+                start = data.currentResult;
+                Numbers = data.total;
+                //进行分页初始化
+                notetypepageReady(type);
+            }
+
+        });
+    }
+
+    /**
+     * 得到搜索后的列表
+     * @param data
+     */
+    function getSearchInfo(){
+        var searchinfo = $("#searchInfo").val();
+        if(searchinfo != ""){
+            $.ajax({
+                type:'post',
+                url:"/getSearch",
+                sync:false,
+                data:{start:start,limit:limit,nowPage:nowPage,Number:Numbers,search:searchinfo},
+                success:function(data){
+                    setHtml(data.root)
+                    start = data.currentResult;
+                    Numbers = data.total;
+                    //进行分页初始化
+                    notesearchpageReady();
+                }
+
+            });
+        }else{
+            $.ajax({
+                type:'post',
+                url:"/getnoteIformation",
+                sync:false,
+                data:{start:start,limit:limit,nowPage:nowPage,Number:Numbers},
+                success:function(data){
+                    setHtml(data.root)
+                    start = data.currentResult;
+                    Numbers = data.total;
+                    //进行分页初始化
+                    pageReady();
+                }
+
+            });
+        }
+    }
+
+    function setHtml(data){
+        var s = "";
+        $(data).each(function(index,object){
+            s += '<div class="blog-post"><h2 style="font-size: 30px;margin-top: 20px;margin-bottom: 10px;font-weight: 500;line-height: 1.1;">'+object.bjmc+'</h2><h4 style="font-size: 20px;line-height: 25px;margin-top: 10px;margin-bottom: 10px;font-weight: 500;">'+object.date+'</h4>';
+            s += '<a href="/noteEntrance?id='+object.id+'" class="btn btn-default btn-lg ">Read More<i class="fa fa-angle-right"></i></a></div>';
+        });
+        if(data.length>0){
+            $("#noteview").html(s);
+        }else{
+            $("#noteview").html("<br/><span style='width:10%;height:30px;display:block;margin:0 auto;'>暂无数据</span>");
+        }
+        console.log(s);
+    }
+
+
+    function pageReady(){
+//layui分页开启
+        layui.use('laypage',function(){
+            var laypage = layui.laypage;
+            laypage.render({
+                elem:'fenYe'
+                ,count:Numbers//后台传入
+                ,limit:limit
+                ,curr:nowPage
+                ,jump:function(obj, first){
+                    //obj包含了当前分页的所有参数，比如：
+                    // console.log(obj.curr); //得到当前页，以便向服务端请求对应页的数据。
+                    // console.log(obj.limit); //得到每页显示的条数
+                    nowPage = obj.curr;
+                    start = (obj.curr-1)*obj.limit;
+                    //首次不执行
+                    if(!first){
+                        getnoteIformation();
+                    }
+
+                }
+            });
+        })
+    }
+
+    function notetypepageReady(type){
+//layui分页开启
+        layui.use('laypage',function(){
+            var laypage = layui.laypage;
+            laypage.render({
+                elem:'fenYe'
+                ,count:Numbers//后台传入
+                ,limit:limit
+                ,curr:nowPage
+                ,jump:function(obj, first){
+                    //obj包含了当前分页的所有参数，比如：
+                    // console.log(obj.curr); //得到当前页，以便向服务端请求对应页的数据。
+                    // console.log(obj.limit); //得到每页显示的条数
+                    nowPage = obj.curr;
+                    start = (obj.curr-1)*obj.limit;
+                    //首次不执行
+                    if(!first){
+                        getTypeInfomation(type);
+                    }
+
+                }
+            });
+        })
+    }
+
+
+    function notesearchpageReady(){
+//layui分页开启
+        layui.use('laypage',function(){
+            var laypage = layui.laypage;
+            laypage.render({
+                elem:'fenYe'
+                ,count:Numbers//后台传入
+                ,limit:limit
+                ,curr:nowPage
+                ,jump:function(obj, first){
+                    //obj包含了当前分页的所有参数，比如：
+                    // console.log(obj.curr); //得到当前页，以便向服务端请求对应页的数据。
+                    // console.log(obj.limit); //得到每页显示的条数
+                    nowPage = obj.curr;
+                    start = (obj.curr-1)*obj.limit;
+                    //首次不执行
+                    if(!first){
+                        getSearchInfo();
+                    }
+
+                }
+            });
+        })
+    }
+
+    $(document).ready(function(){
+        //ajax先拿到后台数据
+        getnoteIformation();
+
+    });
+</script>
+</body>
+</html>

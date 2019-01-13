@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<!--[if IE 8 ]><html class="no-js oldie ie8" lang="en" xmlns:th="http://www.thymeleaf.org"> <![endif]-->
+<!--[if IE 9 ]><html class="no-js oldie ie9" lang="en" xmlns:th="http://www.thymeleaf.org"> <![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!--><html class="no-js" lang="en" xmlns:th="http://www.thymeleaf.org"> <!--<![endif]-->
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>尚无权限</title>
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" th:href="@{/asserts/css/base.css}" >
+    <link rel="stylesheet" th:href="@{/asserts/css/authoriza.css}" >
+    <link rel="stylesheet" th:href="@{/asserts/css/vendor.css}" >
+</head>
+<body>
+
+<!-- main content
+================================================== -->
+<main id="main-404-content" class="main-content-slides">
+
+    <div class="content-wrap">
+
+        <div class="shadow-overlay"></div>
+
+        <div class="main-content">
+            <div class="row">
+                <div class="col-twelve">
+
+                    <h1 class="kern-this">尚无权限哦</h1>
+                    <p>
+                        尚无权限，请联系管理员提升权限哦...
+                    </p>
+
+                    <div class="search">
+                        <form>
+                            <input type="text" id="s" name="s" class="search-field" placeholder="您的需求......">
+                        </form>
+                    </div>
+
+                </div> <!-- /twelve -->
+            </div> <!-- /row -->
+        </div> <!-- /main-content -->
+
+        <footer>
+            <div class="row">
+
+                <div class="col-seven tab-full social-links pull-right">
+                    <ul>
+                        <li><a href="#"><i class="fa fa-facebook"></i></a></li>
+                        <li><a href="#"><i class="fa fa-behance"></i></a></li>
+                        <li><a href="#"><i class="fa fa-twitter"></i></a></li>
+                        <li><a href="#"><i class="fa fa-dribbble"></i></a></li>
+                        <li><a href="#"><i class="fa fa-instagram"></i></a></li>
+                    </ul>
+                </div>
+
+            </div> <!-- /row -->
+        </footer>
+
+    </div> <!-- /content-wrap -->
+
+</main> <!-- /main-404-content -->
+<!-- Java Script
+================================================== -->
+<script type="text/javascript" th:src="@{/asserts/js/jquery.min.js}"></script>
+<script type="text/javascript" th:src="@{/asserts/js/modernizr.js}"></script>
+<script type="text/javascript" th:src="@{/asserts/js/plugins.js}"></script>
+<script type="text/javascript" th:src="@{/asserts/js/authoriza.js}"></script>
+</body>
+
+</html>

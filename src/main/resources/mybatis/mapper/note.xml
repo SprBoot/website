@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.dingdm.website.mapper.NoteMapper">
+    <select id = "getNoteCount" resultType ="Integer">
+		CALL getNoteCount();
+	</select>
+    <select id="getNoteByCount" resultType="cn.dingdm.website.entities.Note" >
+		CALL getAllNoteIfHasNote(#{start},#{end});
+	</select>
+	<select id="getNoteType" resultType="cn.dingdm.website.entities.NoteType">
+		CALL getAllNoteType();
+	</select>
+	<select id="getNoteTypeCount" resultType ="Integer">
+		select count(*) from bj_tb
+		where del_flag = 0 and lxid LIKE "%"#{lxid}"%"
+	</select>
+	<select id="getNoteTypeByCount" resultType="cn.dingdm.website.entities.Note">
+		select * from bj_tb
+		where del_flag = 0 and lxid LIKE "%"#{lxid}"%" limit #{start},#{end};
+	</select>
+	<select id="getNoteById" resultType="cn.dingdm.website.entities.Note">
+		select * from bj_tb
+		where del_flag = 0 AND id = #{id}
+	</select>
+	<select id="getMinId" resultType="Integer">
+		select min(id) from bj_tb where del_flag = 0;
+	</select>
+	<select id="getMaxId" resultType="Integer">
+		select max(id) from bj_tb where del_flag = 0;
+	</select>
+	<insert id="insertComment" parameterType="cn.dingdm.website.entities.Comment">
+    insert into comment_tb values(
+    null,
+    #{questionid},
+    #{authorid},
+    #{commentid},
+    #{uuid},
+    #{floor},
+    #{context},
+    #{date},
+    #{del_flag}
+    );
+    </insert>
+	<select id="getCommentByQuestionidAndFloor" resultType="Object">
+		CALL getAllCommentIfHasComment(#{questionid},#{floor});
+	</select>
+	<select id="getNoteLikeName" resultType="cn.dingdm.website.entities.Note">
+		SELECT * FROM bj_tb WHERE del_flag = 0 AND bjmc LIKE "%"#{bjmc}"%" limit #{start},#{end};
+	</select>
+	<select id="getNoteLikeBjmcCount" resultType ="Integer">
+		SELECT COUNT(*) FROM bj_tb WHERE del_flag = 0 AND bjmc LIKE "%"#{bjmc}"%"
+	</select>
+	<select id="getSonCommentList" resultType="cn.dingdm.website.entities.Comment">
+		SELECT * FROM comment_tb WHERE questionid = #{questionid} AND uuid = #{uuid} AND floor!=1 AND del_flag = 0;
+	</select>
+	<select id="getVuserByCommentId" resultType="cn.dingdm.website.entities.Vuser">
+		SELECT * FROM vuser_tb WHERE id = #{id} AND del_flag = 0;
+	</select>
+	<select id="getAllNoteToBootstraoTable" resultType="cn.dingdm.website.entities.Note">
+		SELECT * FROM bj_tb WHERE del_flag = 0;
+	</select>
+	<select id="getFileSourceCount" resultType="Integer">
+		SELECT count(*) FROM file_note_tb WHERE noteid = #{noteid} AND del_flag = 0;
+	</select>
+	<select id="getFileNoteByCount" resultType="cn.dingdm.website.entities.FileNote" >
+		SELECT * FROM file_note_tb WHERE noteid = #{noteid} AND del_flag = 0 LIMIT #{start},#{end};
+	</select>
+</mapper>

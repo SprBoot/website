@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.dingdm.website.mapper.UserMapper">
+    <!-- 获取个人信息 -->
+    <select id="getUserById" resultType="cn.dingdm.website.entities.User">
+        CALL getUserByUserId(1);
+    </select>
+    <!-- 获取知识 -->
+    <select id="getKnowledge" resultType ="cn.dingdm.website.entities.KnowLedge">
+        CALL getKnowLedgeByUserId();
+	</select>
+    <!-- 获取能力 -->
+    <select id ="getAbility" resultType ="cn.dingdm.website.entities.Abilities">
+	    SELECT nlms_tb.*
+        FROM nlms_tb JOIN user_tb
+        on nlms_tb.nlid = user_tb.id
+      WHERE nlms_tb.del_flag = 0 ANd user_tb.del_flag = 0
+        LIMIT 0,3;
+	</select>
+    <select id="getUserToConfirm" resultType="cn.dingdm.website.entities.Vuser">
+		SELECT * FROM vuser_tb WHERE username = #{username} AND del_flag = 0 AND emailconfirm = 0;
+	</select>
+    <select id="getVuserToCheckRepeat" resultType="cn.dingdm.website.entities.Vuser">
+        SELECT * FROM vuser_tb WHERE username = #{username} AND del_flag = 0;
+    </select>
+    <select id="getVuserToCheckRepeatEmail" resultType="cn.dingdm.website.entities.Vuser">
+        SELECT * FROM vuser_tb WHERE email = #{email} AND del_flag = 0;
+    </select>
+    <insert id="insertVuser" parameterType="cn.dingdm.website.entities.Vuser">
+    insert into vuser_tb values(
+    null,
+    #{username},
+    #{password},
+    #{uuid},
+    #{email},
+    #{emailconfirm},
+    #{del_flag},
+    #{date}
+    );
+    </insert>
+    <select id="getPermissionById" resultType="cn.dingdm.website.entities.Permission">
+		SELECT
+		permission_tb.permission
+		FROM
+		permission_tb
+		JOIN (
+		roleperm_tb
+		JOIN (
+		role_tb
+		JOIN (
+		roleuser_tb
+		JOIN
+		vuser_tb
+		ON roleuser_tb.userid = vuser_tb.id
+		) ON role_tb.id =
+		roleuser_tb.roleid
+		) ON roleperm_tb.roleid = role_tb.id
+		) ON permission_tb.id = roleperm_tb.perid
+		WHERE
+		vuser_tb.id = #{id}
+	</select>
+    <select id="getVuserByUUID" resultType="cn.dingdm.website.entities.Vuser">
+        SELECT * FROM
+        vuser_tb
+        WHERE del_flag = 0 AND uuid = #{uuid}
+    </select>
+    <update id="updateVuserByUUID" parameterType="cn.dingdm.website.entities.Vuser">
+        UPDATE vuser_tb SET
+        emailconfirm = #{emailconfirm}
+        WHERE del_flag = 0 AND uuid = #{uuid}
+    </update>
+    <select id="getVuserRecvById" resultType="cn.dingdm.website.entities.Vuser">
+        SELECT  * FROM vuser_tb WHERE del_flag = 0 AND id = #{id};
+    </select>
+</mapper>

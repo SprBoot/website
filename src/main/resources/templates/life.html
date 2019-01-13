@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!-- META DATA -->
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>生活</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" th:href="@{/asserts/bootstrap/css/bootstrap.css}" >
+    <!-- Owl Carousel Assets -->
+    <link rel="stylesheet" th:href="@{/asserts/css/owl.carousel.min.css}"/>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" th:href="@{/asserts/css/life.css}"/>
+    <!-- Custom Fonts -->
+    <link rel="stylesheet" th:href="@{/asserts/css/font-awesome.css}" >
+    <link rel="stylesheet" th:href="@{/asserts/layui/css/layui.css}" >
+    <link rel="stylesheet" th:href="@{/asserts/css/mouse.css}" >
+    <link rel="stylesheet" th:href="@{/asserts/live2d/css/live2d.css}" >
+    <link th:href="@{http://fonts.googleapis.com/css?family=Asap:400,700}" rel='stylesheet' type='text/css'>
+</head>
+
+<body class="index-page">
+<div th:replace="head::topbar (activeUri='life.html')"></div>
+<!-- CAROUSEL -->
+<div id="carousel-example-generic" class="carousel slide hidden-xs" data-ride="carousel" data-interval="4000">
+    <!-- Wrapper for slides -->
+    <div class="carousel-inner">
+        <div class="item active">
+            <img th:src="@{/asserts/images/banner1.jpg}" alt="...">
+            <!-- Static Header -->
+            <div class="container">
+                <div class="header-text hidden-xs">
+                    <div class="col-md-12 text-center">
+                        <h1>这就是生活！</h1>
+                        <hr>
+                        <p>许多时候，我们总是习惯性地否认了生活。认为它辜负了自己，觉得生活很苦，爱情很苦，活着是负罪。内心便更觉得苦痛了。假如：你觉得自己很卑微，渐渐地你真的卑微了；假如：你觉得自己很哀怨，渐渐地你真的无可救药地成了怨妇；假如：你觉得自己很可怜不能被人懂得，渐渐地你真的成了这世界的可怜人。</p>
+                    </div>
+                </div><!-- /header-text -->
+            </div>
+        </div>
+    </div>
+</div> <!-- Carousel -->
+<header class="container">
+    <div class="site-branding">
+        <h1 class="site-title">
+            <a href="index.html">
+                <span>Life</span>
+            </a>
+        </h1>
+        <h2 class="site-description">Welcome to Us !</h2>
+    </div>
+    <div class="social-links">
+        <ul class="list-inline">
+            <li><a href="#"><i class="fa fa-facebook"></i></a></li>
+            <li><a href="#"><i class="fa fa-twitter"></i></a></li>
+            <li><a href="#"><i class="fa fa-google-plus"></i></a></li>
+            <li><a href="#"><i class="fa fa-vimeo"></i></a></li>
+            <li><a href="#"><i class="fa fa-rss"></i></a></li>
+        </ul>
+    </div>
+</header>
+
+<!-- /////////////////////////////////////////Content -->
+<div id="page-content">
+
+    <!-- ////////////Content Box 01 -->
+    <section class="box-content box-1">
+        <div class="container">
+            <div class="row" id="lifeview">
+            </div>
+            <div id="fenYe"></div>
+            <div class="row" style="margin-top: 25px;" id="gameview">
+            </div>
+            <div id="gamefenYe"></div>
+        </div>
+    </section>
+</div>
+<div th:replace="live2D::live"></div>
+<script type="text/javascript" th:src="@{/asserts/js/html5shiv.js}"></script>
+<script type="text/javascript" th:src="@{/asserts/js/jquery-3.3.1.min.js}"></script>
+<script type="text/javascript" th:src="@{/asserts/bootstrap/js/bootstrap.min.js}" ></script>
+<script type="text/javascript" th:src="@{/asserts/layui/layui.js}" ></script>
+<script th:src="@{/asserts/js/respond.min.js}"></script>
+<!-- Custom Theme JavaScript -->
+<script type="text/javascript" th:src="@{/asserts/js/agency.js}"></script>
+<!-- Plugin JavaScript -->
+<script type="text/javascript" th:src="@{/asserts/js/jquery.easing.1.3.js}"></script>
+<script type="text/javascript" th:src="@{/asserts/js/classie.js}"></script>
+<script type="text/javascript" th:src="@{/asserts/js/cbpAnimatedHeader.js}"></script>
+<script th:src="@{/asserts/js/love.js}"></script>
+<script>
+    var message_Path = 'asserts/live2d/';//资源目录，如果目录不对请更改
+    var talkAPI = "";//如果有类似图灵机器人的聊天接口请填写接口路径
+</script>
+<script type="text/javascript" th:src="@{/asserts/live2d/js/live2d.js}"></script>
+<script type="text/javascript" th:src="@{/asserts/live2d/js/message.js}"></script>
+<script type="text/javascript">
+
+    var hostname = location.hostname;
+    //分页相关参数
+    var start = 0;//起始页
+    var limit = 6;//每页显示条数
+    var nowPage = 1;//当前页
+    var Numbers = 0;//数据量
+
+    function getlifeIformation(){
+//AJAX向后台请求数据
+        $.ajax({
+            type:'post',
+            url:"/getlifeIformation",
+            sync:false,
+            data:{start:start,limit:limit,nowPage:nowPage,Number:Numbers},
+            success:function(data){
+                setHtml(data.root)
+                start = data.currentResult;
+                Numbers = data.total;
+                //进行分页初始化
+                pageReady();
+            }
+
+        });
+    }
+    function setHtml(data){
+        var s = "";
+        $(data).each(function(index,object){
+            s += '<div class="col-md-4"><div class="box-item"><img style="height: 233px;" src="http://www.xuxiaonan.cn/uploadImages/'+object.picid+'" class="img-responsive"/>';
+            s += '<div class="content" style="height: 137px;"><h3>'+object.mc+'</h3><p>'+object.js+'</p><a href="/lifeEntrance?id='+object.id+'">Read More...</a><br><br></div></div></div>';
+        });
+        if(data.length>0){
+            $("#lifeview").html(s);
+        }else{
+            $("#lifeview").html("<br/><span style='width:10%;height:30px;display:block;margin:0 auto;'>暂无数据</span>");
+        }
+        console.log(s);
+    }
+
+
+    function pageReady(){
+//layui分页开启
+        layui.use('laypage',function(){
+            var laypage = layui.laypage;
+            laypage.render({
+                elem:'fenYe'
+                ,count:Numbers//后台传入
+                ,limit:limit
+                ,curr:nowPage
+                ,jump:function(obj, first){
+                    //obj包含了当前分页的所有参数，比如：
+                    // console.log(obj.curr); //得到当前页，以便向服务端请求对应页的数据。
+                    // console.log(obj.limit); //得到每页显示的条数
+                    nowPage = obj.curr;
+                    start = (obj.curr-1)*obj.limit;
+                    //首次不执行
+                    if(!first){
+                        getlifeIformation();
+                    }
+
+                }
+            });
+        })
+    }
+
+    /*游戏获取*/
+    function getgameIformation(){
+//AJAX向后台请求数据
+        $.ajax({
+            type:'post',
+            url:"/getgameIformation",
+            sync:false,
+            data:{start:start,limit:limit,nowPage:nowPage,Number:Numbers},
+            success:function(data){
+                setgameHtml(data.root)
+                start = data.currentResult;
+                Numbers = data.total;
+                //进行分页初始化
+                gamepageReady();
+            }
+
+        });
+    }
+    function setgameHtml(data){
+        var s = "";
+        $(data).each(function(index,object){
+            s += '<div class="col-md-4"><div class="box-item "><img style="height: 233px;" src="http://www.xuxiaonan.cn/uploadImages/'+object.picid+'" class="img-responsive"/>';
+            s += '<div class="content" style="height: 137px;"><h3>'+object.yxmc+'</h3><p>'+object.grgs+'</p><a href="/gameEntrance?id='+object.id+'">Read More...</a><br><br><span>'+object.date+'</span><br></div></div></div>';
+        });
+        if(data.length>0){
+            $("#gameview").html(s);
+        }else{
+            $("#gameview").html("<br/><span style='width:10%;height:30px;display:block;margin:0 auto;'>暂无数据</span>");
+        }
+        console.log(s);
+    }
+
+    function gamepageReady(){
+//layui分页开启
+        layui.use('laypage',function(){
+            var laypage = layui.laypage;
+            laypage.render({
+                elem:'gamefenYe'
+                ,count:Numbers//后台传入
+                ,limit:limit
+                ,curr:nowPage
+                ,jump:function(obj, first){
+                    //obj包含了当前分页的所有参数，比如：
+                    // console.log(obj.curr); //得到当前页，以便向服务端请求对应页的数据。
+                    // console.log(obj.limit); //得到每页显示的条数
+                    nowPage = obj.curr;
+                    start = (obj.curr-1)*obj.limit;
+                    //首次不执行
+                    if(!first){
+                        getgameIformation();
+                    }
+
+                }
+            });
+        })
+    }
+
+    $(document).ready(function(){
+        //ajax先拿到后台数据
+        getlifeIformation();
+        getgameIformation();
+    });
+</script>
+</body>
+</html>

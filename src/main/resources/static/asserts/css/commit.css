@@ -1,0 +1,62 @@
+.all-commits{
+    box-shadow: 0px 0 2px #C1C1C1 !important;
+}
+
+.commit-area{
+    margin: 4em 30px 0px 4em;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.commit-area b{
+    height: 35px;
+    color: #0dc5dd;
+    font-family: 'Titillium Web', sans-serif;
+}
+
+.commit-text{
+    margin-left: 4em;
+    margin-right: 4em;
+}
+
+.commit-text-click{
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.commit-button{
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.media-grids{
+    margin-left: 4em;
+    margin-right: 4em;
+    margin-top: 3em;
+}
+
+media{
+    margin-bottom: 10px;
+}
+
+.media-body p{
+    font-size: 13px;
+    color: #757575;
+    margin: 0 0 .5em 0;
+    line-height: 1.5em;
+}
+
+.media-body span{
+    color: #C7C7C7;
+    font-size: 13px;
+}
+
+.media-body a{
+    color: #ff8d1b;
+    text-decoration: none;
+}
+
+.media-body-second{
+    margin-left: 3em;
+}
+

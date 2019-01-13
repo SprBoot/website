@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <title>head</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <!-- VENDOR CSS -->
+    <link rel="stylesheet" th:href="@{/asserts/bootstrap/css/bootstrap.css}" >
+    <link rel="stylesheet" th:href="@{/asserts/css/font-awesome.css}" >
+    <link rel="stylesheet" th:href="@{/asserts/css/backstyle.css}" >
+    <link rel="stylesheet" th:href="@{/asserts/css/backmain.css}" >
+    <link rel="stylesheet" th:href="@{/asserts/css/demo.css}" >
+    <!-- GOOGLE FONTS -->
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700" rel="stylesheet">
+</head>
+<body>
+<nav class="navbar navbar-default navbar-fixed-top" th:fragment="topbar">
+        <div class="navbar-btn">
+            <button type="button" class="btn-toggle-fullwidth"><i class="lnr lnr-arrow-left-circle"></i></button>
+        </div>
+    <div id="navbar-menu">
+        <ul class="nav navbar-nav navbar-right">
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle icon-menu" data-toggle="dropdown">
+                    <i class="lnr lnr-alarm"></i>
+                    <span class="badge bg-danger" id="recvNumber"></span>
+                </a>
+                <ul class="dropdown-menu notifications" id="msgShow">
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span>[[${session.username}]]</span></a>
+            </li>
+            <li class="dropdown">
+                <a th:href="@{/logout}">logout</a>
+            </li>
+            <!-- <li>
+                <a class="update-pro" href="#downloads/klorofil-pro-bootstrap-admin-dashboard-template/?utm_source=klorofil&utm_medium=template&utm_campaign=KlorofilPro" title="Upgrade to Pro" target="_blank"><i class="fa fa-rocket"></i> <span>UPGRADE TO PRO</span></a>
+            </li> -->
+        </ul>
+    </div>
+</nav>
+<!-- LEFT SIDEBAR -->
+<div id="sidebar-nav" class="sidebar" th:fragment="sidebar" style="padding-top: 80px;">
+    <div class="sidebar-scroll">
+        <nav>
+            <ul class="nav">
+                        <li><a th:class="${activeUri=='personinfo.html'?'active':''}" th:href="@{/mform/mformentrance}"><i class="lnr lnr-home"></i> <span>个人中心</span></a></li>
+                        <li>
+                            <a href="#subPages" data-toggle="collapse" class="collapsed" aria-expanded="false"><i class="lnr lnr-file-empty"></i> <span>我的笔记</span> <i class="icon-submenu lnr lnr-chevron-left"></i></a>
+                            <div id="subPages" class="collapse">
+                                <ul class="nav">
+                                    <li><a th:href="@{/mform/uploadnote}" class="active">笔记上传</a></li>
+                                    <li><a th:href="@{/mform/noteOverview}" class="">笔记概况</a></li>
+                                </ul>
+                            </div>
+                        </li>
+                <li>
+                    <a href="#lifePages" data-toggle="collapse" class="collapsed" aria-expanded="false"><i class="lnr lnr-alarm"></i> <span>生活</span> <i class="icon-submenu lnr lnr-chevron-left"></i></a>
+                    <div id="lifePages" class="collapse">
+                        <ul class="nav">
+                            <li><a class="active" th:href="@{/mform/jumpToLife}">生活文章</a></li>
+                            <li><a class="" th:href="@{/mform/jumpToGame}">游戏文章</a></li>
+                            <li><a th:href="@{/mform/jumpToManager}">管理</a></li>
+                        </ul>
+                    </div>
+                </li>
+                <li shiro:hasPermission="approval:request">
+                    <a href="#processPages" data-toggle="collapse" class="collapsed" aria-expanded="false"><i class="lnr lnr-chart-bars"></i> <span>流程审批</span> <i class="icon-submenu lnr lnr-chevron-left"></i></a>
+                    <div id="processPages" class="collapse">
+                        <ul class="nav">
+                            <li><a th:href="@{/process/processView}" class="active">流程查看</a></li>
+                            <li><a th:href="@{/mform/approvalRequest}" class="active">请求审批</a></li>
+                        </ul>
+                    </div>
+                </li>
+                <li shiro:hasPermission="manager:RoleAndPermission">
+                    <a href="#permissionPages" data-toggle="collapse" class="collapsed" aria-expanded="false"><i class="lnr lnr-cog"></i> <span>权限管理</span> <i class="icon-submenu lnr lnr-chevron-left"></i></a>
+                    <div id="permissionPages" class="collapse">
+                        <ul class="nav">
+                            <li><a th:href="@{/mform/managerUser}" class="active">用户管理</a></li>
+                            <li><a th:href="@{/mform/managerPermission}" class="">权限赋予</a></li>
+                            <li><a th:href="@{/mform/addRoleAndPermission}" class="">权限角色增加</a></li>
+                        </ul>
+                    </div>
+                </li>
+                <li shiro:hasPermission="back:view">
+                    <a href="#permissionApplication" data-toggle="collapse" class="collapsed" aria-expanded="false"><i class="lnr lnr-text-format"></i> <span>权限申请</span> <i class="icon-submenu lnr lnr-chevron-left"></i></a>
+                    <div id="permissionApplication" class="collapse">
+                        <ul class="nav">
+                            <li><a th:href="@{/mform/permissionApplication}" class="active">流程申请</a></li>
+                        </ul>
+                    </div>
+                </li>
+<!--                <li>
+                    <a href="#subPages" data-toggle="collapse" class="collapsed" aria-expanded="false"><i class="lnr lnr-file-empty"></i> <span>游戏与生活</span> <i class="icon-submenu lnr lnr-chevron-left"></i></a>
+                    <div id="subPages" class="collapse">
+                        <ul class="nav">
+                            <li><a href="${pageContext.request.contextPath}/mform/shentrance" class="active">生活</a></li>
+                            <li><a href="${pageContext.request.contextPath}/mform/yxentrance" class="">游戏</a></li>
+                        </ul>
+                    </div>
+                </li>
+                        <li><a href="${pageContext.request.contextPath}/mform/tsentrance" ><i class="lnr lnr-text-format"></i> <span>书籍</span></a></li>-->
+                        <li><a th:href="@{/main}" ><i class="lnr lnr-code"></i> <span>返回主页</span></a></li>
+            </ul>
+        </nav>
+    </div>
+</div>
+<script type="text/javascript" th:src="@{/asserts/js/jquery-3.3.1.min.js}"></script>
+<script type="text/javascript" th:src="@{/asserts/bootstrap/js/bootstrap.min.js}" ></script>
+</body>
+</html>

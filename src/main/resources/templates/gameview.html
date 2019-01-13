@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>游戏</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="keywords" content="Game Spot Responsive web template, Bootstrap Web Templates, Flat Web Templates, Andriod Compatible web template,
+Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, SonyErricsson, Motorola web design" />
+    <script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
+    <link rel="stylesheet" th:href="@{/asserts/bootstrap/css/bootstrap.css}" >
+    <link rel="stylesheet" th:href="@{/asserts/css/view.css}" >
+    <link rel="stylesheet" th:href="@{/asserts/css/mouse.css}" >
+    <link rel="stylesheet" th:href="@{/asserts/live2d/css/live2d.css}" >
+</head>
+<body>
+<div class="container">
+    <div class="single">
+        <div class="blog-to">
+            <img class="img-responsive sin-on" th:src="@{'http://www.xuxiaonan.cn/uploadImages/'+${game.picid}}" alt="" />
+            <div class="blog-top">
+                <div class="blog-left">
+                    <b>Hi</b>
+                </div>
+                <div class="top-blog">
+                    <a class="fast">[[${game.yxmc}]]</a>
+                    <p>Posted by <a >[[${game.yxkfs}]]</a></p>
+                    <p class="sed" th:utext="${game.grgs}"></p>
+                    <div class="clearfix"> </div>
+                </div>
+                <div class="clearfix"> </div>
+            </div>
+        </div>
+        <div class="single-middle">
+
+            <h3>others</h3>
+
+            <div class="media" th:each="games:${games}">
+                <div class="media-left">
+                    <a href="#">
+                        <img class="media-object" src="images/co.png" alt="">
+                    </a>
+                </div>
+                <div class="media-body">
+                    <h4 class="media-heading"><a th:href="@{/gameEntrance(id=${games.id})}">[[${games.yxmc}]]</a></h4>
+                    <p>[[${games.grgs}]]</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<div th:replace="live2D::live"></div>
+<script type="text/javascript" th:src="@{/asserts/js/jquery-3.3.1.min.js}"></script>
+<script th:src="@{/asserts/js/love.js}"></script>
+<script>
+    var message_Path = 'asserts/live2d/';//资源目录，如果目录不对请更改
+    var talkAPI = "";//如果有类似图灵机器人的聊天接口请填写接口路径
+</script>
+<script type="text/javascript" th:src="@{/asserts/live2d/js/live2d.js}"></script>
+<script type="text/javascript" th:src="@{/asserts/live2d/js/message.js}"></script>
+</body>
+</html>

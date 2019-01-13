@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>用户管理</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <!-- VENDOR CSS -->
+    <link rel="stylesheet" th:href="@{/asserts/bootstrap/css/bootstrap.min.css}" >
+    <link rel="stylesheet" th:href="@{/asserts/css/bootstrap-table.css}" >
+    <link rel="stylesheet" th:href="@{/asserts/css/fileinput.css}" >
+    <link rel="stylesheet" th:href="@{/asserts/css/font-awesome.min.css}" >
+    <link rel="stylesheet" th:href="@{/asserts/layui/css/layui.css}" >
+    <link rel="stylesheet" th:href="@{/asserts/css/backstyle.css}" >
+    <link rel="stylesheet" th:href="@{/asserts/css/custom.css}" >
+    <link rel="stylesheet" th:href="@{/asserts/css/backmain.css}" >
+    <link rel="stylesheet" th:href="@{/asserts/css/demo.css}" >
+    <!-- GOOGLE FONTS -->
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700" rel="stylesheet">
+    <style>
+        img { height: auto; width: auto\9; width:100%; }
+    </style>
+</head>
+
+<body>
+<!-- WRAPPER -->
+<div id="wrapper">
+    <!-- NAVBAR -->
+    <div th:replace="backhead::topbar (activeUri='manageruser.html')"></div>
+    <div th:replace="backhead::sidebar (activeUri='manageruser.html')"></div>
+    <!-- MAIN -->
+    <div class="main" style="padding-top: 80px;">
+        <div class="main-content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="container-fluid">
+                        <!-- RECENT PURCHASES -->
+                        <div class="panel">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">权限详细</h3>
+                            </div>
+                            <div class="panel-body">
+                                <div id="toolbar" class="btn-group">
+                                    <button id="btn_add" type="button" class="btn btn-default" data-toggle="modal" data-target="#myModal" onclick="addPermissionId();">
+                                        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>添加权限
+                                    </button>
+                                    <button id="btn_delete" type="button" class="btn btn-default" onclick="deletePermission()">
+                                        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>删除权限
+                                    </button>
+                                </div>
+                                <table id="tb_departments"></table>
+                            </div>
+                        </div>
+                        <!-- END RECENT PURCHASES -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- END MAIN -->
+        <div class="clearfix"></div>
+    </div>
+</div>
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel">权限</h4>
+            </div>
+            <input id="addRoleId" type="hidden" value=""/>
+            <div class="modal-body" id="viewRole">
+                <div class="table-responsive panel-body no-padding ">
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th>选择</th>
+                            <th>权限Id</th>
+                            <th>权限名称</th>
+                            <th>权限描述</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="permissions:${permission}">
+                            <td><input name ="check" type="checkbox" onclick="showCol(this);"></td>
+                            <td name="id">[[${permissions.id}]]</td>
+                            <td name="permission">[[${permissions.permission}]]</td>
+                            <td name="describe">[[${permissions.describe}]]</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <a type="button" class="btn btn-primary" onclick="addToPermission(this);">添加</a>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- END WRAPPER -->
+<!-- Javascript -->
+<script type="text/javascript" th:src="@{/asserts/js/jquery-3.3.1.min.js}"></script>
+<script type="text/javascript" th:src="@{/asserts/bootstrap/js/bootstrap.min.js}" ></script>
+<script type="text/javascript" th:src="@{/asserts/js/bootstrap-table.js}"></script>
+<script type="text/javascript" th:src="@{/asserts/js/bootstrap-table-zh-CN.js}"></script>
+<script type="text/javascript" th:src="@{/asserts/layui/layui.js}" ></script>
+<script type="text/javascript" th:src="@{/asserts/js/jquery.slimscroll.min.js}"></script>
+<script type="text/javascript" th:src="@{/asserts/js/jquery.easypiechart.min.js}"></script>
+<script type="text/javascript" th:src="@{/asserts/js/klorofil-common.js}"></script>
+<script type="text/javascript" th:src="@{/asserts/js/fileinput.js}" ></script>
+<script type="text/javascript" th:src="@{/asserts/js/zh.js}" ></script>
+<script>
+    $(function () {
+
+        //1.初始化Table
+        var oTable = new TableInit();
+        oTable.Init();
+
+        //2.初始化Button的点击事件
+        var oButtonInit = new ButtonInit();
+        oButtonInit.Init();
+
+    });
+
+
+    var TableInit = function () {
+        var oTableInit = new Object();
+        //初始化Table
+        oTableInit.Init = function () {
+            $('#tb_departments').bootstrapTable({
+                url: '/mform/getAllRolesAndPermissions',         //请求后台的URL（*）
+                method: 'get',                      //请求方式（*）
+                toolbar: '#toolbar',                //工具按钮用哪个容器
+                striped: true,                      //是否显示行间隔色
+                cache: false,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+                pagination: true,                   //是否显示分页（*）
+                sortable: false,                     //是否启用排序
+                sortOrder: "asc",                   //排序方式
+                queryParams: oTableInit.queryParams,//传递参数（*）
+                sidePagination: "client",           //分页方式：client客户端分页，server服务端分页（*）
+                pageNumber:1,                       //初始化加载第一页，默认第一页
+                pageSize: 6,                       //每页的记录行数（*）
+                pageList: [6,10,25,50,100],        //可供选择的每页的行数（*）
+                search: true,                       //是否显示表格搜索，此搜索是客户端搜索，不会进服务端，所以，个人感觉意义不大
+                strictSearch: false,                //设置true为全匹配搜索，否则为模糊搜索
+                showColumns: true,                  //是否显示所有的列
+                showRefresh: true,                  //是否显示刷新按钮
+                showToggle: true,                    //是否显示切换视图（table/card）按钮
+                showPaginationSwitch: true,          //是否显示切换分页按钮
+                minimumCountColumns: 2,             //最少允许的列数
+                clickToSelect: true,                //是否启用点击选中行
+                uniqueId: "id",                     //每一行的唯一标识，一般为主键列
+                showToggle:true,                    //是否显示详细视图和列表视图的切换按钮
+                cardView: false,                    //是否显示详细视图
+                detailView: true,                   //是否显示父子表
+                icons: {                             //自定义图标
+                    paginationSwitchDown: 'glyphicon-collapse-down icon-chevron-down',
+                    paginationSwitchUp: 'glyphicon-collapse-up icon-chevron-up',
+                    refresh: 'glyphicon-refresh icon-refresh',
+                    toggle: 'glyphicon-list-alt icon-list-alt',
+                    columns: 'glyphicon-th icon-th',
+                    detailOpen: 'glyphicon-plus icon-plus',
+                    detailClose: 'glyphicon-minus icon-minus'
+                },
+                iconsPrefix: 'glyphicon',           //定义字体库
+                columns: [{
+                    checkbox: true
+                }
+                    , {
+                        field: 'id',
+                        title: '角色ID'
+                    }, {
+                        field: 'role',
+                        title: '角色名称'
+                    }, {
+                        field: 'describe',
+                        title: '角色描述'
+                    }, {
+                        field: 'date',
+                        title: '创建时间'
+                    }],
+                onExpandRow: function(index, row, $detail) {
+                    var roleid = row.id;
+                    //这一步就是相当于在当前点击列下新创建一个table
+                    var cur_table = $detail.html('<table id="sonTable"></table>').find('table');
+                    $(cur_table).bootstrapTable({
+                        url: '/mform/getAllPermissionsByRoleId?id='+roleid,         //请求后台的URL（*）
+                        method: 'post',                      //请求方式（*）
+                        striped: true,                      //是否显示行间隔色
+                        cache: false,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+                        pagination: true,                   //是否显示分页（*）
+                        sortable: false,                     //是否启用排序
+                        sortOrder: "asc",                   //排序方式
+                        sidePagination: "client",           //分页方式：client客户端分页，server服务端分页（*）
+                        pageNumber:1,                       //初始化加载第一页，默认第一页
+                        pageSize: 6,                       //每页的记录行数（*）
+                        pageList: [6,10,25,50,100],        //可供选择的每页的行数（*）
+                        search: true,                       //是否显示表格搜索，此搜索是客户端搜索，不会进服务端，所以，个人感觉意义不大
+                        strictSearch: false,                //设置true为全匹配搜索，否则为模糊搜索
+                        showColumns: true,                  //是否显示所有的列
+                        showRefresh: true,                  //是否显示刷新按钮
+                        showToggle: true,                    //是否显示切换视图（table/card）按钮
+                        showPaginationSwitch: true,          //是否显示切换分页按钮
+                        minimumCountColumns: 2,             //最少允许的列数
+                        clickToSelect: true,                //是否启用点击选中行
+                        height: 360,                        //行高，如果没有设置height属性，表格自动根据记录条数觉得表格高度
+                        uniqueId: "id",                     //每一行的唯一标识，一般为主键列
+                        showToggle:true,                    //是否显示详细视图和列表视图的切换按钮
+                        cardView: false,                    //是否显示详细视图
+                        detailView: false,                   //是否显示父子表
+                        icons: {                             //自定义图标
+                            paginationSwitchDown: 'glyphicon-collapse-down icon-chevron-down',
+                            paginationSwitchUp: 'glyphicon-collapse-up icon-chevron-up',
+                            refresh: 'glyphicon-refresh icon-refresh',
+                            toggle: 'glyphicon-list-alt icon-list-alt',
+                            columns: 'glyphicon-th icon-th',
+                            detailOpen: 'glyphicon-plus icon-plus',
+                            detailClose: 'glyphicon-minus icon-minus'
+                        },
+                        iconsPrefix: 'glyphicon',           //定义字体库
+                        columns: [{
+                            checkbox: true
+                        }, {
+                            field: 'role.id',
+                            title: '角色ID'
+                        }, {
+                                field: 'id',
+                                title: '权限ID'
+                            }, {
+                                field: 'permission',
+                                title: '权限名称'
+                            }, {
+                                field: 'describe',
+                                title: '权限描述'
+                            }, {
+                                field: 'date',
+                                title: '创建时间'
+                            }]
+                    });
+                }
+            });
+        };
+        //得到查询的参数
+        oTableInit.queryParams = function (params) {
+            var temp = {   //这里的键的名字和控制器的变量名必须一直，这边改动，控制器也需要改成一样的
+                limit: params.limit,   //页面大小
+                offset: params.offset,  //页码
+            };
+            return temp;
+        };
+        return oTableInit;
+    };
+    var ButtonInit = function () {
+        var oInit = new Object();
+        var postdata = {};
+
+        oInit.Init = function () {
+            //初始化页面上面的按钮事件
+        };
+        return oInit;
+    };
+    function deletePermission(){
+        var currentRow = $("#sonTable").bootstrapTable('getSelections');
+        if(currentRow.length < 1){
+            alert("请至少选择一条数据！");
+        }else{
+            var roleid = currentRow[0].role.id;
+            var permissionid = [];
+            for(var i=0;i<currentRow.length;i++){
+                permissionid[i] = currentRow[i].id;
+            }
+        }
+        $.ajax({
+            type:'post',
+            url:"/mform/removeRolePermission",
+            sync:false,
+            traditional: true,
+            data:{permissionid:permissionid,"roleid":roleid},
+            success:function(data){
+                alert(data);
+                location.reload();
+            }
+
+        });
+    }
+</script>
+<script>
+    var permissions = [];
+    var len = 0;
+    function showCol(obj) {
+        $(obj).parent().parent().toggleClass("useUser");
+    }
+    function addPermissionId(){
+        var currentRow = $("#tb_departments").bootstrapTable('getSelections');
+        if(currentRow.length < 1 || currentRow.length > 1){
+            alert("请选择一个角色！");
+            location.reload();
+        }else{
+            var roleid = currentRow[0].id;
+            $("#addRoleId").val(roleid);
+        }
+    }
+    function addToPermission(obj){
+        $(".useUser").each(function () {
+            var permission = $(this).children().next().html()
+            permissions[len] = permission;
+            len++;
+        });
+        var currentRoleId = $("#addRoleId").val();
+        if(permissions.length == 0){
+            alert("请选择权限");
+        }else{
+            $.ajax({
+                type:'post',
+                url:"/mform/addRolePermissions",
+                traditional: true,
+                data:{permissionArray:permissions,"roleid":currentRoleId},
+                success:function(data){
+                    alert(data);
+                    location.reload();
+                }
+
+            });
+        }
+    }
+</script>
+</body>
+</html>

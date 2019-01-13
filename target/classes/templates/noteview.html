@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="keywords" content="Game Spot Responsive web template, Bootstrap Web Templates, Flat Web Templates, Andriod Compatible web template,
+Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, SonyErricsson, Motorola web design" />
+    <script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>我的笔记</title>
+    <link rel="stylesheet" th:href="@{/asserts/bootstrap/css/bootstrap.css}" >
+    <link rel="stylesheet" th:href="@{/asserts/css/view.css}" >
+    <link rel="stylesheet" th:href="@{/asserts/css/editormd.css}" >
+    <link rel="stylesheet" th:href="@{/asserts/css/font-awesome.css}" >
+    <link rel="stylesheet" th:href="@{/asserts/css/style.css}" >
+    <link rel="stylesheet" th:href="@{/asserts/css/commit.css}" >
+    <link rel="stylesheet" th:href="@{/asserts/css/mouse.css}" >
+    <link rel="stylesheet" th:href="@{/asserts/live2d/css/live2d.css}" >
+</head>
+<body>
+<div id="header">
+    <div class="overlay">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8 header-text-top " id="about">
+
+                    <h2><strong style="font-size: 30px;margin-top: 20px;margin-bottom: 10px;font-weight: bold;line-height: 1.1;">个人笔记记录</strong></h2>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container">
+    <div class="single">
+        <div class="blog-to">
+            <div class="blog-top">
+                <div class="blog-left">
+                    <b>Hi</b>
+                </div>
+                <div class="top-blog">
+                    <a class="fast">[[${Note.bjmc}]]</a><p style="float: right;">[[${Note.description}]]</p>
+                    <p>Noted by <a>[[${Note.bjzz}]]</a><a th:href="@{'/fileSourcesEntrance?id='+ ${Note.id}}" style="float: right;color: white;" type="button" class="btn btn-success"><i class="fa fa-check-circle"></i>下载</a></p>
+                    <input type="hidden" th:value="${Note.bjzz}"  id="author"/>
+                    <input type="hidden" th:value="${Note.id}"  id="questionid"/>
+                    <div id="layout">
+                        <div id="test-editormd-view">
+                            <textarea id="append-test" style="display:none;">[[${Note.bjnr}]]</textarea>
+                        </div>
+
+                        <div class="all-commits">
+                            <input type="hidden" th:value="${session.id}" id="userid"/>
+                            <input type="hidden" value="" class="floor"/>
+                            <input type="hidden" value="" class="uuid"/>
+                            <input type="hidden" value="1" class="authorid"/>
+                            <div class="commit-area">
+                                <b>评论区</b>
+                            </div>
+                        <div class="commit-text question-root">
+                                     <textarea  class="form-control comment-text" rows="3" id="commentcontext"></textarea>
+                                     <div class="commit-button">
+                                         <div shiro:authenticated="true">
+                                             <a class="btn btn-default" type="button" onclick="submitcomment(this);">提交</a>
+                                         </div>
+                                     </div>
+
+
+
+
+                            <div class="media-grids" style="margin-left: 0em;margin-top: 1em;">
+                                <div class="media" style="margin-bottom: 10px;" id="commentTree">
+                                    <div class="media-body" th:if="${comment != null}" th:each="comment:${commentList}" style="margin-bottom: 1em;">
+                                        <input type="hidden" th:value="${comment.floor}" class="floor"/>
+                                        <input type="hidden" th:value="${comment.uuid}" class="uuid"/>
+                                        <input type="hidden" th:value="${comment.commentid}" class="authorid"/>
+                                        <p>[[${comment.context}]]</p>
+                                        <span>
+                                            <a href="#">[[${comment.commentName}]]</a>&nbsp;评论&nbsp;
+                                            <a href="#">[[${comment.authorName}]]</a><a style="float: right;" onclick="commit(this);" shiro:authenticated="true">评论</a>
+                                        </span>
+                                        <div class="media-body" th:if="comment.commentList != ''" th:each="soncomment:${comment.comments}" style="margin-left: 2em;margin-top: 1em;">
+                                            <input type="hidden" th:value="${soncomment.floor}" class="floor"/>
+                                            <input type="hidden" th:value="${soncomment.uuid}" class="uuid"/>
+                                            <input type="hidden" th:value="${soncomment.commentid}" class="authorid"/>
+                                            <p>[[${soncomment.context}]]</p>
+                                            <span>
+                                            <a href="#">[[${soncomment.commentName}]]</a>&nbsp;评论&nbsp;
+                                            <a href="#">[[${soncomment.authorName}]]</a><a style="float: right;" onclick="commit(this);" shiro:authenticated="true">评论</a>
+                                        </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+                    <div class="clearfix"> </div>
+                    <a th:if="${Note.id} gt ${minid}" th:href="@{/notepageEntrance(beforeid=${Note.id}-1)}" type="button" class="btn btn-default">上一篇</a>
+                    <a th:if="${Note.id} lt ${maxid}" th:href="@{/notepageEntrance(afterid=${Note.id}+1)}" type="button" class="btn btn-default">下一篇</a>
+                </div>
+                <div class="clearfix"> </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div th:replace="live2D::live"></div>
+<script type="text/javascript" th:src="@{/asserts/js/jquery-3.3.1.min.js}"></script>
+<script type="text/javascript" th:src="@{/asserts/js/editormd.min.js}"></script>
+<script type="text/javascript" th:src="@{/asserts/bootstrap/js/bootstrap.min.js}" ></script>
+<script type="text/javascript" th:src="@{/asserts/mark/marked.min.js}"></script>
+<script type="text/javascript" th:src="@{/asserts/mark/prettify.min.js}"></script>
+<script type="text/javascript" th:src="@{/asserts/mark/raphael.min.js}"></script>
+<script type="text/javascript" th:src="@{/asserts/mark/underscore.min.js}"></script>
+<script type="text/javascript" th:src="@{/asserts/mark/sequence-diagram.min.js}"></script>
+<script type="text/javascript" th:src="@{/asserts/mark/flowchart.min.js}"></script>
+<script type="text/javascript" th:src="@{/asserts/mark/jquery.flowchart.min.js}"></script>
+<script th:src="@{/asserts/js/love.js}"></script>
+<!--<script>
+    var message_Path = 'asserts/live2d/';//资源目录，如果目录不对请更改
+    var talkAPI = "";//如果有类似图灵机器人的聊天接口请填写接口路径
+</script>
+<script type="text/javascript" th:src="@{/asserts/live2d/js/live2d.js}"></script>
+<script type="text/javascript" th:src="@{/asserts/live2d/js/message.js}"></script>-->
+<script type="text/javascript">
+    $(function() {
+        var testEditormdView
+        testEditormdView = editormd.markdownToHTML("test-editormd-view", {
+            htmlDecode      : "style,script,iframe",  // you can filter tags decode
+            emoji           : true,
+            taskList        : true,
+            tex             : true,  // 默认不解析
+            flowChart       : true,  // 默认不解析
+            sequenceDiagram : true,  // 默认不解析
+        });
+    });
+    function commit(obj) {
+
+        if($(obj).hasClass("addHtml")){
+            //此时存在addHtml类，表示已插入了内容，接下来应该删掉,同时删掉addHtml类名；
+            $(obj).parent().children(".commit-text-click").remove();
+            $(obj).removeClass("addHtml");
+        }else{ //不存在addHtml类名，接下来要添加html内容,同时也添加addHtml类名;
+            $(obj).addClass("addHtml");
+            $(obj).parent().append("<div class=\"commit-text-click\">\n" +
+                "<textarea class=\"form-control\" rows=\"3\" name=\"commentcontext\" id=\"soncommentcontext\"></textarea>\n" +
+                "<div class=\"commit-button\">\n" +
+                "<input class=\"btn btn-default\" type=\"submit\" value=\"Submit\" onclick=\"submitcomment(this);\">\n" +
+                "</div>\n" +
+                "</div>");
+        }
+    }
+    function submitcomment(obj) {
+        var questionid = $("#questionid").val();
+        var floor = $(obj).parent().parent().parent().parent().children(".floor").val();
+        var authorid = $(obj).parent().parent().parent().parent().children(".authorid").val();
+        var commentid = $("#userid").val();
+        var context = $("#commentcontext").val();
+        if(context == ""){
+            context = $(obj).parent().parent().children("#soncommentcontext").val();
+        }
+        var uuid = $(obj).parent().parent().parent().parent().children(".uuid").val();
+        if(floor == ''){
+            floor = 1;
+        }else{
+            floor += 1;
+        }
+        if(uuid == ""){
+            uuid = "";
+        }
+        $.ajax({
+            type:'post',
+            url:"/submitcomment",
+            sync:false,
+            data:{questionid:questionid,authorid:authorid,commentid:commentid,context:context,uuid:uuid,floor:floor},
+            success:function(data){
+                if(data == "success"){
+                    alert("评论成功！");
+                    location.reload();
+                }
+            }
+
+        });
+    }
+</script>
+</body>
+</html>

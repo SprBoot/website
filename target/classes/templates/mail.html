@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>mail</title>
+</head>
+<body>
+<input id="confirmInfo" type="hidden" th:value="${msg}"/>
+<script type="text/javascript" th:src="@{/asserts/js/jquery-3.3.1.min.js}"></script>
+<script>
+    $(document).ready(function(){
+        //ajax先拿到后台数据
+        getInfo();
+
+    });
+    function getInfo(){
+        var info = $("#confirmInfo").val();
+        alert(info);
+        window.location.href="http://www.xuxiaonan.cn/sign"
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <title>个人主页</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1" name="viewport"/>
+    <meta content="" name="description"/>
+    <meta content="" name="author"/>
+    <!-- GLOBAL MANDATORY STYLES -->
+    <link th:href="@{http://fonts.googleapis.com/css?family=Hind:300,400,500,600,700}" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" th:href="@{/asserts/css/simple-line-icons.css}" >
+    <link rel="stylesheet" th:href="@{/asserts/bootstrap/css/bootstrap.css}" >
+    <!-- PAGE LEVEL PLUGIN STYLES -->
+    <link rel="stylesheet" th:href="@{/asserts/css/ani.css}" >
+    <!-- THEME STYLES -->
+    <link rel="stylesheet" th:href="@{/asserts/css/layout.min.css}" >
+    <link rel="stylesheet" th:href="@{/asserts/css/dinggc.css}" >
+    <link rel="stylesheet" th:href="@{/asserts/css/mouse.css}" >
+    <link rel="stylesheet" th:href="@{/asserts/live2d/css/live2d.css}" >
+</head>
+<!-- BODY -->
+<body id="body" data-spy="scroll" data-target=".header">
+<div th:replace="head::topbar (activeUri='me.html')"></div>
+<!--========== PAGE LAYOUT ==========-->
+<!-- About -->
+<div id="myCarousel" class="carousel slide">
+    <!-- 轮播（Carousel）指标 -->
+    <ol class="carousel-indicators">
+        <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+        <li data-target="#myCarousel" data-slide-to="1"></li>
+        <li data-target="#myCarousel" data-slide-to="2"></li>
+    </ol>
+    <!-- 轮播（Carousel）项目 -->
+    <div class="carousel-inner">
+        <div class="item active">
+            <img th:src="@{/asserts/images/me.jpg}" alt="First slide">
+        </div>
+    </div>
+    <!-- 轮播（Carousel）导航 -->
+    <a class="left carousel-control" href="#myCarousel" role="button" data-slide="prev">
+        <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+        <span class="sr-only">Previous</span>
+    </a>
+    <a class="right carousel-control" href="#myCarousel" role="button" data-slide="next">
+        <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+        <span class="sr-only">Next</span>
+    </a>
+</div>
+<!-- Info -->
+<div id="info">
+    <div class="bg-color-sky-light" data-auto-height="true">
+        <div class="container content-lg">
+            <div class="row">
+                <div class="col-sm-3 sm-margin-b-30">
+                    <div class="text-right sm-text-left">
+                        <h2 class="margin-b-0">信息</h2>
+                        <p>个人介绍.</p>
+                    </div>
+                </div>
+                <div class="col-sm-8 col-sm-offset-1" th:if="${user != null}">
+                    <div class="row row-space-2 margin-b-4">
+                        <div class="margin-b-60">
+                            <p>[[${user.name}]]</p>
+                        </div>
+                        <div class="margin-b-60">
+                            <p>[[${user.gzly}]]</p>
+                        </div>
+                    </div>
+                    <!--// end row -->
+                </div>
+            </div>
+            <!--// end row -->
+        </div>
+    </div>
+</div>
+<!-- End Info -->
+<div id="about">
+    <div class="container content-lg">
+        <div class="row">
+            <div class="col-sm-3 sm-margin-b-30">
+                <div class="text-right sm-text-left">
+                    <h2 class="margin-b-0">简介</h2>
+                    <p>能力.</p>
+                </div>
+            </div>
+            <div class="col-sm-8 col-sm-offset-1">
+                <div class="margin-b-60">
+                    <p>[[${user.grjs}]]</p>
+                </div>
+
+                    <div class="progress-box" th:if="${know != null}" th:each="know:${knowledge}">
+                        <h5>[[${know.zsmc}]]<span class="color-heading pull-right">[[${know.percent}]]%</span></h5>
+                        <div class="progress">
+                            <div class="progress-bar bg-color-base" role="progressbar" th:attr="data-width=${know.percent}"></div>
+                        </div>
+                    </div>
+
+                <!-- End Progress Box -->
+            </div>
+        </div>
+        <!--// end row -->
+    </div>
+</div>
+<!-- End About -->
+
+<!-- Experience -->
+<div id="experience">
+    <div class="bg-color-sky-light" data-auto-height="true">
+        <div class="container content-lg">
+            <div class="row">
+                <div class="col-sm-3 sm-margin-b-30">
+                    <div class="text-right sm-text-left">
+                        <h2 class="margin-b-0">经验</h2>
+                        <p>知识掌握.</p>
+                    </div>
+                </div>
+                <div class="col-sm-8 col-sm-offset-1">
+                    <div class="row row-space-2 margin-b-4">
+
+
+                            <div class="col-md-4 md-margin-b-4" th:each="abilities:${abilities}">
+                                <div class="service" data-height="height">
+                                    <div class="service-element">
+                                        <i class="service-icon icon-chemistry"></i>
+                                    </div>
+                                    <div class="service-info">
+                                        <h3>[[${abilities.nlmc}]]</h3>
+                                        <p class="margin-b-5">[[${abilities.nlzw}]]</p>
+                                    </div>
+                                    <!-- <a href="#" class="content-wrapper-link"></a>   -->
+                                </div>
+                            </div>
+
+
+                    </div>
+                    <!--// end row -->
+                </div>
+            </div>
+            <!--// end row -->
+        </div>
+    </div>
+</div>
+<!-- End Experience -->
+                        </div>
+                </div>
+                <!-- End Masonry Grid -->
+            </div>
+        </div>
+        <!--// end row -->
+    </div>
+</div>
+<!-- End Work -->
+<div th:replace="live2D::live"></div>
+<!-- Back To Top -->
+<a href="javascript:void(0);" class="js-back-to-top back-to-top">Top</a>
+<script type="text/javascript" th:src="@{/asserts/js/jquery-3.3.1.min.js}"></script>
+<script type="text/javascript" th:src="@{/asserts/js/migrate.min.js}"></script>
+<script type="text/javascript" th:src="@{/asserts/bootstrap/js/bootstrap.min.js}" ></script>
+<!-- PAGE LEVEL PLUGINS -->
+<script type="text/javascript" th:src="@{/asserts/js/easing.js}"></script>
+<script type="text/javascript" th:src="@{/asserts/js/back-to-top.js}"></script>
+<script type="text/javascript" th:src="@{/asserts/js/smooth-scroll.js}"></script>
+<script type="text/javascript" th:src="@{/asserts/js/j.wow.min.js}"></script>
+<script type="text/javascript" th:src="@{/asserts/js/parallax.min.js}"></script>
+<script type="text/javascript" th:src="@{/asserts/js/appear.js}"></script>
+<script type="text/javascript" th:src="@{/asserts/js/masonry.pkgd.min.js}"></script>
+<script type="text/javascript" th:src="@{/asserts/js/pkgd.min.js}"></script>
+<script type="text/javascript" th:src="@{/asserts/js/dinggc.js}"></script>
+<!-- PAGE LEVEL SCRIPTS -->
+<script type="text/javascript" th:src="@{/asserts/js/layout.min.js}"></script>
+<script type="text/javascript" th:src="@{/asserts/js/progress-bar.min.js}"></script>
+<script type="text/javascript" th:src="@{/asserts/js/masonry.min.js}"></script>
+<script type="text/javascript" th:src="@{/asserts/js/wow.min.js}"></script>
+<script th:src="@{/asserts/js/love.js}"></script>
+<script>
+    var message_Path = 'asserts/live2d/';//资源目录，如果目录不对请更改
+    var talkAPI = "";//如果有类似图灵机器人的聊天接口请填写接口路径
+</script>
+<script type="text/javascript" th:src="@{/asserts/live2d/js/live2d.js}"></script>
+<script type="text/javascript" th:src="@{/asserts/live2d/js/message.js}"></script>
+</body>
+<!-- END BODY -->
+</html>

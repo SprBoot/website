@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>影集</title>
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" th:href="@{/asserts/bootstrap/css/bootstrap.css}" >
+    <!-- Add custom CSS here -->
+    <link rel="stylesheet" th:href="@{/asserts/css/slidefolio.css}" >
+    <link rel="stylesheet" th:href="@{/asserts/css/font-awesome.css}" >
+    <link rel="stylesheet" th:href="@{/asserts/css/mouse.css}" >
+    <link rel="stylesheet" th:href="@{/asserts/live2d/css/live2d.css}" >
+</head>
+<body>
+<!-- Header Area -->
+<div id="top" class="header">
+</div>
+<div th:replace="head::topbar (activeUri='photo.html')"></div>
+<!-- Portfolio -->
+<div id="portfolio" class="portfolio">
+    <div class="container">
+        <div class="row push50">
+            <div class="col-md-4 col-md-offset-4 text-center">
+                <h2>Our Work</h2>
+                <h3>
+                    <span class="filter label label-default" data-filter="all">所有</span>
+                    <span class="filter label label-default" data-filter="bw">生&amp;活</span>
+                    <span class="filter label label-default" data-filter="nature">自然</span>
+                    <span class="filter label label-default" data-filter="portraits">私密</span>
+                </h3>
+                <hr>
+            </div>
+        </div>
+
+        <div class="row">
+
+            <div class="gallery">
+
+                <ul id="Grid" class="gcontainer">
+                    <li class="col-md-4 col-sm-4 col-xs-12 mix bw portraits" data-cat="graphics">
+                        <a data-toggle="modal" data-target="#portrait1" class="mix-cover">
+                            <img class="horizontal" th:src="@{/asserts/images/myphoto/portrait1-sm.jpg}" src="img/portrait1-sm.jpg" alt="placeholder">
+                            <span class="overlay"><span class="valign"></span><span class="title">Portrait 1</span></span>
+                        </a>
+                    </li>
+                    <li class="col-md-4 col-sm-4 col-xs-12 mix portraits" data-cat="graphics">
+                        <a data-toggle="modal" data-target="#portrait2" class="mix-cover">
+                            <img class="horizontal" th:src="@{/asserts/images/myphoto/portrait2.jpg}" src="img/portrait2.jpg" alt="placeholder">
+                            <span class="overlay"><span class="valign"></span><span class="title">Portrait 2</span></span>
+                        </a>
+                    </li>
+                    <li class="col-md-4 col-sm-4 col-xs-12 mix nature" data-cat="nature">
+                        <a data-toggle="modal" data-target="#nature1" class="mix-cover">
+                            <img class="horizontal" th:src="@{/asserts/images/myphoto/nature1.jpg}" src="img/nature1.jpg" alt="placeholder">
+                            <span class="overlay"><span class="valign"></span><span class="title">Nature 1</span></span>
+                        </a>
+                    </li>
+                    <li class="col-md-4 col-sm-4 col-xs-12 mix portraits" data-cat="portraits">
+                        <a data-toggle="modal" data-target="#portrait3" class="mix-cover">
+                            <img class="horizontal" th:src="@{/asserts/images/myphoto/portrait3.jpg}" src="img/portrait3.jpg" alt="placeholder">
+                            <span class="overlay"><span class="valign"></span><span class="title">Portrait 3</span></span>
+                        </a>
+                    </li>
+                    <li class="col-md-4 col-sm-4 col-xs-12 mix portraits" data-cat="portraits">
+                        <a data-toggle="modal" data-target="#portrait5" class="mix-cover">
+                            <img class="horizontal" th:src="@{/asserts/images/myphoto/portrait5.jpg}" src="img/portrait5.jpg" alt="placeholder">
+                            <span class="overlay"><span class="valign"></span><span class="title">Portrait 5</span></span>
+                        </a>
+                    </li>
+                    <li class="col-md-4 col-sm-4 col-xs-12 mix nature" data-cat="nature">
+                        <a data-toggle="modal" data-target="#nature" class="mix-cover">
+                            <img class="horizontal" th:src="@{/asserts/images/myphoto/nature.jpg}" src="img/nature.jpg" alt="placeholder">
+                            <span class="overlay"><span class="valign"></span><span class="title">Nature</span></span>
+                        </a>
+                    </li>
+                    <li class="col-md-4 col-sm-4 col-xs-12 mix portraits" data-cat="portrait">
+                        <a data-toggle="modal" data-target="#portrait4" class="mix-cover green">
+                            <img class="vertical" th:src="@{/asserts/images/myphoto/portrait4.jpg}" src="img/portrait4.jpg" alt="portrait 4">
+                            <span class="overlay"><span class="valign"></span><span class="title">Portrait 4</span></span>
+                        </a>
+                    </li>
+                    <li class="col-md-4 col-sm-4 col-xs-12 mix bw nature all" data-cat="portrait">
+                        <a data-toggle="modal" data-target="#forest" class="mix-cover green">
+                            <img class="vertical" th:src="@{/asserts/images/myphoto/forest.jpg}" src="img/forest.jpg" alt="Forest">
+                            <span class="overlay"><span class="valign"></span><span class="title">Forest</span></span>
+                        </a>
+                    </li>
+                    <li class="col-md-4 col-sm-4 col-xs-12 mix bw nature all" data-cat="bw">
+                        <a data-toggle="modal" data-target="#bw1" class="mix-cover green">
+                            <img class="vertical" th:src="@{/asserts/images/myphoto/bw1.jpg}" src="img/bw1.jpg" alt="Black and White">
+                            <span class="overlay"><span class="valign"></span><span class="title">Black &amp; White</span></span>
+                        </a>
+                    </li>
+                </ul>
+
+                <!-- Load Photo in Modal -->
+                <div class="modal fade" id="portrait1" tabindex="-1" role="dialog" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                <h4 class="modal-title text-center">Portrait 1</h4>
+                            </div>
+                            <div class="modal-body">
+                                <img class="thumbnail" alt="Portrait1" th:src="@{/asserts/images/myphoto/portrait1.jpg}" src="img/portrait1.jpg"/>
+                            </div>
+                        </div><!-- /.modal-content -->
+                    </div><!-- /.modal-dialog -->
+                </div><!-- /.modal -->
+
+                <div class="modal fade" id="portrait2" tabindex="-1" role="dialog"  aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                <h4 class="modal-title text-center">Portrait 2</h4>
+                            </div>
+                            <div class="modal-body">
+                                <img class="thumbnail" alt="Portrait1" th:src="@{/asserts/images/myphoto/portrait2.jpg}" src="img/portrait2.jpg"/>
+                            </div>
+                        </div><!-- /.modal-content -->
+                    </div><!-- /.modal-dialog -->
+                </div><!-- /.modal -->
+
+                <div class="modal fade" id="portrait3" tabindex="-1" role="dialog" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                <h4 class="modal-title text-center">Portrait 3</h4>
+                            </div>
+                            <div class="modal-body">
+                                <img class="thumbnail" alt="Portrait1" th:src="@{/asserts/images/myphoto/portrait3.jpg}" src="img/portrait3.jpg"/>
+                            </div>
+                        </div><!-- /.modal-content -->
+                    </div><!-- /.modal-dialog -->
+                </div><!-- /.modal -->
+
+                <div class="modal fade" id="portrait4" tabindex="-1" role="dialog"  aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                <h4 class="modal-title text-center">Portrait 4</h4>
+                            </div>
+                            <div class="modal-body">
+                                <img class="thumbnail" alt="Portrait1" th:src="@{/asserts/images/myphoto/portrait4.jpg}" src="img/portrait4.jpg"/>
+                            </div>
+                        </div><!-- /.modal-content -->
+                    </div><!-- /.modal-dialog -->
+                </div><!-- /.modal -->
+
+                <div class="modal fade" id="portrait5" tabindex="-1" role="dialog"  aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                <h4 class="modal-title text-center">Portrait 5</h4>
+                            </div>
+                            <div class="modal-body">
+                                <img class="thumbnail" alt="Portrait1" th:src="@{/asserts/images/myphoto/portrait5.jpg}" src="img/portrait5.jpg"/>
+                            </div>
+                        </div><!-- /.modal-content -->
+                    </div><!-- /.modal-dialog -->
+                </div><!-- /.modal -->
+
+                <div class="modal fade" id="nature" tabindex="-1" role="dialog"  aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                <h4 class="modal-title text-center">Nature</h4>
+                            </div>
+                            <div class="modal-body">
+                                <img class="thumbnail" alt="nature" th:src="@{/asserts/images/myphoto/nature.jpg}" src="img/nature.jpg"/>
+                            </div>
+                        </div><!-- /.modal-content -->
+                    </div><!-- /.modal-dialog -->
+                </div><!-- /.modal -->
+                <div class="tlinks">Collect from <a href="http://www.cssmoban.com/" >企业网站模板</a></div>
+                <div class="modal fade" id="nature1" tabindex="-1" role="dialog" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                <h4 class="modal-title text-center">Nature 1</h4>
+                            </div>
+                            <div class="modal-body">
+                                <img class="thumbnail" alt="nature" th:src="@{/asserts/images/myphoto/nature1.jpg}" src="img/nature1.jpg"/>
+                            </div>
+                        </div><!-- /.modal-content -->
+                    </div><!-- /.modal-dialog -->
+                </div><!-- /.modal -->
+
+
+                <div class="modal fade" id="forest" tabindex="-1" role="dialog" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                <h4 class="modal-title text-center">Forest</h4>
+                            </div>
+                            <div class="modal-body">
+                                <img class="thumbnail" alt="forest" th:src="@{/asserts/images/myphoto/forest.jpg}" src="img/forest.jpg"/>
+                            </div>
+                        </div><!-- /.modal-content -->
+                    </div><!-- /.modal-dialog -->
+                </div><!-- /.modal -->
+
+                <div class="modal fade" id="bw1" tabindex="-1" role="dialog" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                <h4 class="modal-title text-center">Black and White</h4>
+                            </div>
+                            <div class="modal-body">
+                                <img class="thumbnail" alt="forest" th:src="@{/asserts/images/myphoto/bw1.jpg}" src="img/bw1.jpg"/>
+                            </div>
+                        </div><!-- /.modal-content -->
+                    </div><!-- /.modal-dialog -->
+                </div><!-- /.modal -->
+
+
+                <!-- /Load Photo in Modal -->
+            </div>
+        </div>
+    </div>
+</div>
+<div th:replace="live2D::live"></div>
+<!-- /Portfolio -->
+<script type="text/javascript" th:src="@{/asserts/js/jquery.min.js}"></script>
+<script type="text/javascript" th:src="@{/asserts/bootstrap/js/bootstrap.min.js}" ></script>
+<script type="text/javascript" th:src="@{/asserts/js/jquery-scrolltofixed-min.js}"></script>
+<script type="text/javascript" th:src="@{/asserts/js/jquery.vegas.js}"></script>
+<script type="text/javascript" th:src="@{/asserts/js/jquery.mixitup.min.js}"></script>
+<script type="text/javascript" th:src="@{/asserts/js/jquery.validate.min.js}"></script>
+<script type="text/javascript" th:src="@{/asserts/js/myphotoscript.js}"></script>
+<script th:src="@{/asserts/js/love.js}"></script>
+<script>
+    var message_Path = 'asserts/live2d/';//资源目录，如果目录不对请更改
+    var talkAPI = "";//如果有类似图灵机器人的聊天接口请填写接口路径
+</script>
+<script type="text/javascript" th:src="@{/asserts/live2d/js/live2d.js}"></script>
+<script type="text/javascript" th:src="@{/asserts/live2d/js/message.js}"></script>
+<script>
+    $.vegas('slideshow', {
+        delay:5000,
+        backgrounds:[
+            { src:'/asserts/images/myphoto/nature1.jpg', fade:2000 },
+            { src:'/asserts/images/myphoto/bw1.jpg', fade:2000 },
+            { src:'/asserts/images/myphoto/portrait1.jpg', fade:2000 },
+            { src:'/asserts/images/myphoto/portrait5.jpg', fade:2000 },
+            { src:'/asserts/images/myphoto/portrait2.jpg', fade:2000 },
+            { src:'/asserts/images/myphoto/portrait3.jpg', fade:2000 },
+            { src:'/asserts/images/myphoto/portrait4.jpg', fade:2000 },
+            { src:'/asserts/images/myphoto/forest.jpg', fade:2000 }
+
+        ]
+    })('overlay', {
+        src:'/asserts/images/myphoto/overlay.png'
+    });
+
+</script>
+<!-- /Slideshow Background -->
+
+<!-- Mixitup : Grid -->
+<script>
+    $(function(){
+        $('#Grid').mixitup();
+    });
+</script>
+<!-- /Mixitup : Grid -->
+
+<!-- Custom JavaScript for Smooth Scrolling - Put in a custom JavaScript file to clean this up -->
+<script>
+    $(function() {
+        $('a[href*=#]:not([href=#])').click(function() {
+            if (location.pathname.replace(/^\//,'') == this.pathname.replace(/^\//,'')
+                || location.hostname == this.hostname) {
+
+                var target = $(this.hash);
+                target = target.length ? target : $('[name=' + this.hash.slice(1) +']');
+                if (target.length) {
+                    $('html,body').animate({
+                        scrollTop: target.offset().top
+                    }, 1000);
+                    return false;
+                }
+            }
+        });
+    });
+</script>
+<!-- Navbar -->
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#nav').scrollToFixed();
+    });
+</script>
+</body>
+
+</html>
